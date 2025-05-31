@@ -77,6 +77,30 @@ class HomePage extends StatelessWidget {
               color: Color(0xFFB266B2),
               onTap: () {},
             ),
+            MenuCard(
+              icon: Icons.monitor_heart,
+              title: 'Pemantauan Tumbuh Kembang Anak',
+              color: Color(0xFF81C784), // hijau pastel
+              onTap: () {},
+            ),
+            MenuCard(
+              icon: Icons.local_dining,
+              title: 'Panduan Menyusui & Nutrisi',
+              color: Color(0xFFFFE082), // kuning pastel
+              onTap: () {},
+            ),
+            MenuCard(
+              icon: Icons.self_improvement,
+              title: 'Kesehatan Mental Ibu',
+              color: Color(0xFF9575CD), // ungu pastel
+              onTap: () {},
+            ),
+            MenuCard(
+              icon: Icons.group,
+              title: 'Keluarga Berencana',
+              color: Color(0xFF4FC3F7), // biru pastel
+              onTap: () {},
+            ),
           ],
         ),
       ),
@@ -103,29 +127,37 @@ class MenuCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        color: color.withOpacity(0.15),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 2,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+        color: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        elevation: 0.5,
+        shadowColor: color.withOpacity(0.15),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: color.withOpacity(0.18), width: 1.2),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                color: Colors.deepPurple,
-                size: 28,
-              ), // warna icon lebih gelap agar kontras
-              const SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.12),
+                  shape: BoxShape.circle,
+                ),
+                padding: const EdgeInsets.all(14),
+                child: Icon(icon, color: color.withOpacity(0.85), size: 30),
+              ),
+              const SizedBox(height: 14),
               Text(
                 title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color:
-                      Colors.deepPurple, // warna teks lebih gelap agar kontras
+                  color: Colors.black87,
+                  letterSpacing: 0.2,
                 ),
               ),
             ],
