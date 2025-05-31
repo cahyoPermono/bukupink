@@ -1,7 +1,150 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
+}
+
+class LastPeriodProvider extends ChangeNotifier {
+  DateTime? _lastPeriodDate;
+
+  DateTime? get lastPeriodDate => _lastPeriodDate;
+
+  void setLastPeriodDate(DateTime date) {
+    _lastPeriodDate = date;
+    notifyListeners();
+  }
+}
+
+class PregnancyDashboardPage extends StatelessWidget {
+  const PregnancyDashboardPage({super.key});
+
+  int calculatePregnancyWeeks(DateTime lastPeriod) {
+    final now = DateTime.now();
+    final diff = now.difference(lastPeriod);
+    return (diff.inDays / 7).floor();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final lastPeriod = context.watch<LastPeriodProvider>().lastPeriodDate;
+    final weeks = lastPeriod != null ? calculatePregnancyWeeks(lastPeriod) : 0;
+    return Scaffold(
+      appBar: AppBar(title: const Text('Dashboard Kehamilan')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Umur Kehamilan',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              '$weeks minggu',
+              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Tanggal Haid Terakhir: ${lastPeriod != null ? "${lastPeriod.day}-${lastPeriod.month}-${lastPeriod.year}" : "-"}',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class LastPeriodFormPage extends StatefulWidget {
+  const LastPeriodFormPage({super.key});
+
+  @override
+  State<LastPeriodFormPage> createState() => _LastPeriodFormPageState();
+}
+
+class _LastPeriodFormPageState extends State<LastPeriodFormPage> {
+  DateTime? _selectedDate;
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Input Tanggal Haid Terakhir')),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Masukkan tanggal haid terakhir Anda',
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 24),
+              InkWell(
+                onTap: () async {
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(DateTime.now().year - 2),
+                    lastDate: DateTime.now(),
+                  );
+                  if (picked != null) {
+                    setState(() {
+                      _selectedDate = picked;
+                    });
+                  }
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 24,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.pinkAccent.withOpacity(0.3),
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.calendar_today, color: Colors.pink[300]),
+                      const SizedBox(width: 12),
+                      Text(
+                        _selectedDate == null
+                            ? 'Pilih tanggal'
+                            : '${_selectedDate!.day}-${_selectedDate!.month}-${_selectedDate!.year}',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
+              ElevatedButton(
+                onPressed:
+                    _selectedDate == null
+                        ? null
+                        : () {
+                          context.read<LastPeriodProvider>().setLastPeriodDate(
+                            _selectedDate!,
+                          );
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const PregnancyDashboardPage(),
+                            ),
+                          );
+                        },
+                child: const Text('Simpan'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -9,34 +152,37 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'BukuPink',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Color(0xFFFFB6C1), // Soft pink
-          primary: Color(0xFFFFB6C1), // Pink
-          secondary: Color(0xFFFFC1CC), // Light pink
-          background: Color(0xFFFFF0F5), // Lavender blush
-          onPrimary: Colors.white,
-        ),
-        scaffoldBackgroundColor: Color(0xFFFFF0F5),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFFFFB6C1),
-          foregroundColor: Colors.white,
-          elevation: 0,
-        ),
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: Color(0xFFFFB6C1),
-        ),
-        fontFamily: 'Roboto',
-        textTheme: const TextTheme(
-          headlineMedium: TextStyle(
-            color: Color(0xFFB266B2),
-            fontWeight: FontWeight.bold,
+    return ChangeNotifierProvider(
+      create: (_) => LastPeriodProvider(),
+      child: MaterialApp(
+        title: 'BukuPink',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Color(0xFFFFB6C1), // Soft pink
+            primary: Color(0xFFFFB6C1), // Pink
+            secondary: Color(0xFFFFC1CC), // Light pink
+            background: Color(0xFFFFF0F5), // Lavender blush
+            onPrimary: Colors.white,
+          ),
+          scaffoldBackgroundColor: Color(0xFFFFF0F5),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Color(0xFFFFB6C1),
+            foregroundColor: Colors.white,
+            elevation: 0,
+          ),
+          floatingActionButtonTheme: const FloatingActionButtonThemeData(
+            backgroundColor: Color(0xFFFFB6C1),
+          ),
+          fontFamily: 'Roboto',
+          textTheme: const TextTheme(
+            headlineMedium: TextStyle(
+              color: Color(0xFFB266B2),
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
+        home: const HomePage(),
       ),
-      home: const HomePage(),
     );
   }
 }
@@ -63,7 +209,25 @@ class HomePage extends StatelessWidget {
               icon: Icons.favorite,
               title: 'Pemantauan Kehamilan',
               color: Color(0xFFFFB6C1),
-              onTap: () {},
+              onTap: () {
+                final lastPeriod =
+                    context.read<LastPeriodProvider>().lastPeriodDate;
+                if (lastPeriod == null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const LastPeriodFormPage(),
+                    ),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const PregnancyDashboardPage(),
+                    ),
+                  );
+                }
+              },
             ),
             MenuCard(
               icon: Icons.child_friendly,
