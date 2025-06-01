@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'controllers.dart';
 
 class PregnancyDashboardPage extends StatelessWidget {
-  const PregnancyDashboardPage({super.key});
+  final DateTime? lastPeriod;
+  const PregnancyDashboardPage({super.key, this.lastPeriod});
 
   int calculatePregnancyWeeks(DateTime lastPeriod) {
     final now = DateTime.now();
@@ -13,16 +12,12 @@ class PregnancyDashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lastPeriod = Get.find<LastPeriodController>().lastPeriodDate.value;
-    final weeks = lastPeriod != null ? calculatePregnancyWeeks(lastPeriod) : 0;
+    final DateTime? period = lastPeriod;
+    final weeks = period != null ? calculatePregnancyWeeks(period) : 0;
     // HPL = hari terakhir haid + 9 bulan 10 hari
     String hplString = '-';
-    if (lastPeriod != null) {
-      final hpl = DateTime(
-        lastPeriod.year,
-        lastPeriod.month + 9,
-        lastPeriod.day + 10,
-      );
+    if (period != null) {
+      final hpl = DateTime(period.year, period.month + 9, period.day + 10);
       hplString =
           "${hpl.day.toString().padLeft(2, '0')}-${hpl.month.toString().padLeft(2, '0')}-${hpl.year}";
     }
@@ -152,8 +147,8 @@ class PregnancyDashboardPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      lastPeriod != null
-                          ? "${lastPeriod.day.toString().padLeft(2, '0')}-${lastPeriod.month.toString().padLeft(2, '0')}-${lastPeriod.year}"
+                      period != null
+                          ? "${period.day.toString().padLeft(2, '0')}-${period.month.toString().padLeft(2, '0')}-${period.year}"
                           : "-",
                       style: const TextStyle(color: Colors.black87),
                     ),

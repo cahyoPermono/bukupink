@@ -150,12 +150,21 @@ class _PregnancyListPageState extends State<PregnancyListPage> {
                                       'Tanggal: ${pregnancy.date}',
                                     ),
                                     onTap: () {
+                                      final dateParts = pregnancy.date.split(
+                                        '-',
+                                      );
+                                      final period = DateTime(
+                                        int.parse(dateParts[0]),
+                                        int.parse(dateParts[1]),
+                                        int.parse(dateParts[2]),
+                                      );
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder:
-                                              (_) =>
-                                                  const PregnancyDashboardPage(),
+                                              (_) => PregnancyDashboardPage(
+                                                lastPeriod: period,
+                                              ),
                                         ),
                                       );
                                     },
