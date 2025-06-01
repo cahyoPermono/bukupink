@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Get.put(LastPeriodController());
   runApp(const MyApp());
 }
 
-class LastPeriodProvider extends ChangeNotifier {
-  DateTime? _lastPeriodDate;
-
-  DateTime? get lastPeriodDate => _lastPeriodDate;
+class LastPeriodController extends GetxController {
+  Rxn<DateTime> lastPeriodDate = Rxn<DateTime>();
 
   void setLastPeriodDate(DateTime date) {
-    _lastPeriodDate = date;
-    notifyListeners();
+    lastPeriodDate.value = date;
   }
 }
 
@@ -27,7 +26,7 @@ class PregnancyDashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lastPeriod = context.watch<LastPeriodProvider>().lastPeriodDate;
+    final lastPeriod = Get.find<LastPeriodController>().lastPeriodDate.value;
     final weeks = lastPeriod != null ? calculatePregnancyWeeks(lastPeriod) : 0;
     return Scaffold(
       appBar: AppBar(title: const Text('Dashboard Kehamilan')),
@@ -127,7 +126,7 @@ class _LastPeriodFormPageState extends State<LastPeriodFormPage> {
                     _selectedDate == null
                         ? null
                         : () {
-                          context.read<LastPeriodProvider>().setLastPeriodDate(
+                          Get.find<LastPeriodController>().setLastPeriodDate(
                             _selectedDate!,
                           );
                           Navigator.pushReplacement(
@@ -152,36 +151,164 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => LastPeriodProvider(),
-      child: MaterialApp(
-        title: 'BukuPink',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Color(0xFFFFB6C1), // Soft pink
-            primary: Color(0xFFFFB6C1), // Pink
-            secondary: Color(0xFFFFC1CC), // Light pink
-            background: Color(0xFFFFF0F5), // Lavender blush
-            onPrimary: Colors.white,
+    return GetMaterialApp(
+      title: 'BukuPink',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Color(0xFFFFB6C1),
+          primary: Color(0xFFFFB6C1),
+          secondary: Color(0xFFFFC1CC),
+          background: Color(0xFFFFF0F5),
+          onPrimary: Colors.white,
+        ),
+        scaffoldBackgroundColor: Color(0xFFFFF0F5),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFFFFB6C1),
+          foregroundColor: Colors.white,
+          elevation: 0,
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Color(0xFFFFB6C1),
+        ),
+        fontFamily: 'Roboto',
+        textTheme: const TextTheme(
+          headlineMedium: TextStyle(
+            color: Color(0xFFB266B2),
+            fontWeight: FontWeight.bold,
           ),
-          scaffoldBackgroundColor: Color(0xFFFFF0F5),
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Color(0xFFFFB6C1),
-            foregroundColor: Colors.white,
-            elevation: 0,
-          ),
-          floatingActionButtonTheme: const FloatingActionButtonThemeData(
-            backgroundColor: Color(0xFFFFB6C1),
-          ),
-          fontFamily: 'Roboto',
-          textTheme: const TextTheme(
-            headlineMedium: TextStyle(
-              color: Color(0xFFB266B2),
-              fontWeight: FontWeight.bold,
+        ),
+      ),
+      initialRoute: '/login',
+      getPages: [
+        GetPage(name: '/login', page: () => LoginPage()),
+        GetPage(name: '/home', page: () => HomePage()),
+        GetPage(name: '/last-period', page: () => LastPeriodFormPage()),
+        GetPage(name: '/dashboard', page: () => PregnancyDashboardPage()),
+      ],
+    );
+  }
+}
+
+class AuthService {
+  static Future<bool> login(String username, String password) async {
+    // Simulasi proses login, ganti dengan logika autentikasi yang sebenarnya
+    await Future.delayed(Duration(seconds: 2));
+    return username == 'admin' && password == 'admin';
+  }
+
+  static void logout() {
+    // Jika ada state login, hapus di sini. Untuk simulasi, cukup redirect ke login.
+    Get.offAllNamed('/login');
+  }
+}
+
+class LoginPage extends StatelessWidget {
+  LoginPage({super.key});
+
+  final _formKey = GlobalKey<FormState>();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final RxBool _loading = false.obs;
+  final RxString _error = ''.obs;
+
+  Future<void> _login() async {
+    _loading.value = true;
+    _error.value = '';
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text;
+    final success = await AuthService.login(username, password);
+    _loading.value = false;
+    if (success) {
+      Get.offAllNamed('/home');
+    } else {
+      _error.value = 'Username atau password salah';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(32),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'BukuPink',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                const SizedBox(height: 32),
+                TextFormField(
+                  controller: _usernameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Username',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator:
+                      (v) =>
+                          v == null || v.isEmpty
+                              ? 'Username wajib diisi'
+                              : null,
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator:
+                      (v) =>
+                          v == null || v.isEmpty
+                              ? 'Password wajib diisi'
+                              : null,
+                ),
+                Obx(
+                  () =>
+                      _error.value.isNotEmpty
+                          ? Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Text(
+                              _error.value,
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          )
+                          : const SizedBox(),
+                ),
+                const SizedBox(height: 32),
+                SizedBox(
+                  width: double.infinity,
+                  child: Obx(
+                    () => ElevatedButton(
+                      onPressed:
+                          _loading.value
+                              ? null
+                              : () {
+                                if (_formKey.currentState!.validate()) {
+                                  _login();
+                                }
+                              },
+                      child:
+                          _loading.value
+                              ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                              : const Text('Login'),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
-        home: const HomePage(),
       ),
     );
   }
@@ -196,6 +323,15 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('BukuPink - Ibu Hamil'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
+            onPressed: () {
+              AuthService.logout();
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -211,7 +347,7 @@ class HomePage extends StatelessWidget {
               color: Color(0xFFFFB6C1),
               onTap: () {
                 final lastPeriod =
-                    context.read<LastPeriodProvider>().lastPeriodDate;
+                    Get.find<LastPeriodController>().lastPeriodDate.value;
                 if (lastPeriod == null) {
                   Navigator.push(
                     context,
