@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'controllers.dart';
 import 'pages_lastperiod.dart';
 import 'pages_dashboard.dart';
 import 'services_pregnancy.dart';
@@ -91,35 +89,14 @@ class _PregnancyListPageState extends State<PregnancyListPage> {
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                         onPressed: () async {
-                          final lastPeriod =
-                              Get.find<LastPeriodController>()
-                                  .lastPeriodDate
-                                  .value;
-                          if (lastPeriod == null) {
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const LastPeriodFormPage(),
-                              ),
-                            );
-                            // Setelah input tanggal haid, refresh list
-                            fetchPregnancies();
-                          } else {
-                            // Tambah kehamilan baru ke database
-                            final pregnancy = Pregnancy(
-                              name: 'Kehamilan ${pregnancies.length + 1}',
-                              date:
-                                  '${lastPeriod.year}-${lastPeriod.month.toString().padLeft(2, '0')}-${lastPeriod.day.toString().padLeft(2, '0')}',
-                            );
-                            await PregnancyService.insertPregnancy(pregnancy);
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const PregnancyDashboardPage(),
-                              ),
-                            );
-                            fetchPregnancies();
-                          }
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const LastPeriodFormPage(),
+                            ),
+                          );
+                          // Setelah input tanggal haid, refresh list
+                          fetchPregnancies();
                         },
                       ),
                     ),
