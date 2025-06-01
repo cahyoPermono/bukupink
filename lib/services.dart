@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
+import 'services_user.dart';
 
 class AuthService {
   static Future<bool> login(String username, String password) async {
-    await Future.delayed(Duration(seconds: 2));
-    return username == 'admin' && password == 'admin';
+    final user = await DatabaseService.getUser(username, password);
+    await Future.delayed(Duration(milliseconds: 500));
+    return user != null;
   }
 
   static void logout() {

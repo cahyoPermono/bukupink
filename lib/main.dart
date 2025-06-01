@@ -1,13 +1,20 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'controllers.dart';
 import 'pages_dashboard.dart';
 import 'pages_lastperiod.dart';
 import 'pages_home.dart';
 import 'pages_login.dart';
+import 'pages_signup.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  if (!Platform.isAndroid && !Platform.isIOS) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
   Get.put(LastPeriodController());
   runApp(const MyApp());
 }
@@ -47,6 +54,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/login',
       getPages: [
         GetPage(name: '/login', page: () => LoginPage()),
+        GetPage(name: '/signup', page: () => SignupPage()),
         GetPage(name: '/home', page: () => HomePage()),
         GetPage(name: '/last-period', page: () => LastPeriodFormPage()),
         GetPage(name: '/dashboard', page: () => PregnancyDashboardPage()),
