@@ -55,31 +55,65 @@ class _ProfilePageState extends State<ProfilePage> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(color: Color(0xFFFFB6C1)),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 32,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.person,
-                      size: 40,
-                      color: Color(0xFFFFB6C1),
+              margin: EdgeInsets.zero,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFFFFB6C1), Color(0xFFFFE0F0)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: FutureBuilder(
+                future: UserProfileService.getProfile(),
+                builder: (context, snapshot) {
+                  String displayName = name;
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    displayName = 'Memuat...';
+                  } else if (snapshot.hasData && snapshot.data != null) {
+                    displayName = snapshot.data?.name ?? name;
+                  }
+                  return Center(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            radius: 36,
+                            backgroundColor: Colors.white,
+                            child: Image.asset(
+                              'assets/icons/cute_girl.png',
+                              height: 48,
+                              width: 48,
+                              fit: BoxFit.contain,
+                              errorBuilder:
+                                  (c, o, s) => Icon(
+                                    Icons.person,
+                                    size: 44,
+                                    color: Color(0xFFFFB6C1),
+                                  ),
+                            ),
+                          ),
+                          SizedBox(height: 14),
+                          Text(
+                            displayName,
+                            style: TextStyle(
+                              color: Color(0xFFB266B2),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'Nunito',
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    name,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
+            Container(height: 2, color: Colors.transparent),
+            SizedBox(height: 0),
             ListTile(
               leading: Icon(Icons.home),
               title: Text('Home'),

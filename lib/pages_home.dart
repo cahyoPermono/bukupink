@@ -14,7 +14,14 @@ class HomePage extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(color: Color(0xFFFFB6C1)),
+              margin: EdgeInsets.zero,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFFFFB6C1), Color(0xFFFFE0F0)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
               child: FutureBuilder(
                 future: UserProfileService.getProfile(),
                 builder: (context, snapshot) {
@@ -24,32 +31,53 @@ class HomePage extends StatelessWidget {
                   } else if (snapshot.hasData && snapshot.data != null) {
                     displayName = snapshot.data?.name ?? 'Nama Pengguna';
                   }
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        radius: 32,
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.person,
-                          size: 40,
-                          color: Color(0xFFFFB6C1),
-                        ),
+                  return Center(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            radius: 36,
+                            backgroundColor: Colors.white,
+                            child: Image.asset(
+                              'assets/icons/cute_girl.png',
+                              height: 48,
+                              width: 48,
+                              fit: BoxFit.contain,
+                              errorBuilder:
+                                  (c, o, s) => Icon(
+                                    Icons.person,
+                                    size: 44,
+                                    color: Color(0xFFFFB6C1),
+                                  ),
+                            ),
+                          ),
+                          SizedBox(height: 14),
+                          Text(
+                            displayName,
+                            style: TextStyle(
+                              color: Color(0xFFB266B2),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'Nunito',
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 12),
-                      Text(
-                        displayName,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                    ),
                   );
                 },
               ),
             ),
+            Container(
+              height: 2,
+              color:
+                  Colors
+                      .transparent, // bisa diganti dengan Color(0xFFFFE0F0) jika masih ada garis
+            ),
+            SizedBox(height: 0),
             ListTile(
               leading: Icon(Icons.home),
               title: Text('Home'),
@@ -78,12 +106,12 @@ class HomePage extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(20.0),
         child: GridView.count(
           crossAxisCount: 2,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          childAspectRatio: 1.1,
+          mainAxisSpacing: 18,
+          crossAxisSpacing: 18,
+          childAspectRatio: 0.85, // card lebih tinggi
           children: [
             MenuCard(
               icon: Icons.favorite,
@@ -157,41 +185,66 @@ class MenuCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Card(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        elevation: 0.5,
-        shadowColor: color.withOpacity(0.15),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: color.withOpacity(0.18), width: 1.2),
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 180),
+        curve: Curves.easeInOut,
+        child: Card(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.12),
-                  shape: BoxShape.circle,
+          elevation: 2.5,
+          shadowColor: color.withOpacity(0.18),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(color: color.withOpacity(0.22), width: 1.5),
+            ),
+            padding: const EdgeInsets.symmetric(
+              vertical: 18,
+              horizontal: 10,
+            ), // padding vertikal dikurangi
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.16),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: color.withOpacity(0.12),
+                        blurRadius: 12,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.all(12), // padding icon dikurangi
+                  child: Icon(
+                    icon,
+                    color: color.withOpacity(0.95),
+                    size: 32,
+                  ), // icon lebih kecil
                 ),
-                padding: const EdgeInsets.all(14),
-                child: Icon(icon, color: color.withOpacity(0.85), size: 30),
-              ),
-              const SizedBox(height: 14),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                  letterSpacing: 0.2,
+                const SizedBox(height: 10), // jarak antar elemen dikurangi
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 3, // maxLines jadi 3
+                  style: TextStyle(
+                    fontSize: 15.5,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFFB266B2),
+                    fontFamily: 'Nunito',
+                    letterSpacing: 0.3,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
