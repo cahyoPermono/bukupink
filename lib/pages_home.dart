@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pages_pregnancy_list.dart';
+import 'services_user.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -14,28 +15,39 @@ class HomePage extends StatelessWidget {
           children: [
             DrawerHeader(
               decoration: BoxDecoration(color: Color(0xFFFFB6C1)),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 32,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.person,
-                      size: 40,
-                      color: Color(0xFFFFB6C1),
-                    ),
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    'Nama Pengguna',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+              child: FutureBuilder(
+                future: UserProfileService.getProfile(),
+                builder: (context, snapshot) {
+                  String displayName = 'Nama Pengguna';
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    displayName = 'Memuat...';
+                  } else if (snapshot.hasData && snapshot.data != null) {
+                    displayName = snapshot.data?.name ?? 'Nama Pengguna';
+                  }
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 32,
+                        backgroundColor: Colors.white,
+                        child: Icon(
+                          Icons.person,
+                          size: 40,
+                          color: Color(0xFFFFB6C1),
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      Text(
+                        displayName,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
             ListTile(
