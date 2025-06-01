@@ -41,6 +41,12 @@ class PregnancyService {
     return List.generate(maps.length, (i) => Pregnancy.fromMap(maps[i]));
   }
 
+  static Future<void> deletePregnancy(int? id) async {
+    if (id == null) return;
+    final db = await _getDb();
+    await db.delete('pregnancies', where: 'id = ?', whereArgs: [id]);
+  }
+
   static Future<Database> _getDb() async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'bukupink.db');

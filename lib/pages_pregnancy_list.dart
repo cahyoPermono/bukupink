@@ -52,23 +52,193 @@ class _PregnancyListPageState extends State<PregnancyListPage> {
                               itemCount: pregnancies.length,
                               itemBuilder: (context, index) {
                                 final pregnancy = pregnancies[index];
-                                return ListTile(
-                                  leading: const Icon(
-                                    Icons.favorite,
-                                    color: Color(0xFFFFB6C1),
+                                return Dismissible(
+                                  key: ValueKey(pregnancy.id),
+                                  direction: DismissDirection.endToStart,
+                                  background: Container(
+                                    alignment: Alignment.centerRight,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFFFF0F6),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: const Icon(
+                                      Icons.delete_outline_rounded,
+                                      color: Color(0xFFF06292),
+                                      size: 32,
+                                    ),
                                   ),
-                                  title: Text(pregnancy.name),
-                                  subtitle: Text('Tanggal: ${pregnancy.date}'),
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (_) =>
-                                                const PregnancyDashboardPage(),
-                                      ),
+                                  confirmDismiss: (direction) async {
+                                    final confirm = await showDialog<bool>(
+                                      context: context,
+                                      builder:
+                                          (context) => AlertDialog(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            backgroundColor: const Color(
+                                              0xFFFFF0F6,
+                                            ),
+                                            title: const Text(
+                                              'Konfirmasi',
+                                              style: TextStyle(
+                                                color: Color(0xFFF06292),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            content: const Text(
+                                              'Yakin ingin menghapus kehamilan ini? 🍼',
+                                              style: TextStyle(
+                                                color: Color(0xFFAD1457),
+                                              ),
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                child: const Text(
+                                                  'Batal',
+                                                  style: TextStyle(
+                                                    color: Color(0xFFF06292),
+                                                  ),
+                                                ),
+                                                onPressed:
+                                                    () => Navigator.of(
+                                                      context,
+                                                    ).pop(false),
+                                              ),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Color(
+                                                    0xFFF06292,
+                                                  ),
+                                                  foregroundColor: Colors.white,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
+                                                  ),
+                                                ),
+                                                child: const Text('Hapus'),
+                                                onPressed:
+                                                    () => Navigator.of(
+                                                      context,
+                                                    ).pop(true),
+                                              ),
+                                            ],
+                                          ),
                                     );
+                                    return confirm == true;
                                   },
+                                  onDismissed: (direction) async {
+                                    await PregnancyService.deletePregnancy(
+                                      pregnancy.id,
+                                    );
+                                    setState(() {
+                                      pregnancies.removeAt(index);
+                                    });
+                                  },
+                                  child: ListTile(
+                                    leading: const Icon(
+                                      Icons.favorite,
+                                      color: Color(0xFFFFB6C1),
+                                    ),
+                                    title: Text(pregnancy.name),
+                                    subtitle: Text(
+                                      'Tanggal: ${pregnancy.date}',
+                                    ),
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (_) =>
+                                                  const PregnancyDashboardPage(),
+                                        ),
+                                      );
+                                    },
+                                    trailing: IconButton(
+                                      icon: const Icon(
+                                        Icons.delete_outline_rounded,
+                                        color: Color(0xFFF48FB1),
+                                      ),
+                                      tooltip: 'Hapus',
+                                      onPressed: () async {
+                                        final confirm = await showDialog<bool>(
+                                          context: context,
+                                          builder:
+                                              (context) => AlertDialog(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                backgroundColor: const Color(
+                                                  0xFFFFF0F6,
+                                                ),
+                                                title: const Text(
+                                                  'Konfirmasi',
+                                                  style: TextStyle(
+                                                    color: Color(0xFFF06292),
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                content: const Text(
+                                                  'Yakin ingin menghapus kehamilan ini? 🍼',
+                                                  style: TextStyle(
+                                                    color: Color(0xFFAD1457),
+                                                  ),
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                    child: const Text(
+                                                      'Batal',
+                                                      style: TextStyle(
+                                                        color: Color(
+                                                          0xFFF06292,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    onPressed:
+                                                        () => Navigator.of(
+                                                          context,
+                                                        ).pop(false),
+                                                  ),
+                                                  ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: Color(
+                                                        0xFFF06292,
+                                                      ),
+                                                      foregroundColor:
+                                                          Colors.white,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              12,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                    child: const Text('Hapus'),
+                                                    onPressed:
+                                                        () => Navigator.of(
+                                                          context,
+                                                        ).pop(true),
+                                                  ),
+                                                ],
+                                              ),
+                                        );
+                                        if (confirm == true) {
+                                          await PregnancyService.deletePregnancy(
+                                            pregnancy.id,
+                                          );
+                                          setState(() {
+                                            pregnancies.removeAt(index);
+                                          });
+                                        }
+                                      },
+                                    ),
+                                  ),
                                 );
                               },
                             ),
