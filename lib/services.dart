@@ -11,4 +11,9 @@ class AuthService {
   static void logout() {
     Get.offAllNamed('/login');
   }
+
+  static Future<int?> getCurrentUserId(String username) async {
+    final user = await DatabaseService.getUserByUsername(username);
+    return user?.id;
+  }
 }

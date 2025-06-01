@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'services.dart';
+import 'services_user.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -19,7 +20,15 @@ class LoginPage extends StatelessWidget {
     final success = await AuthService.login(username, password);
     _loading.value = false;
     if (success) {
-      Get.offAllNamed('/home');
+      // Cek profile di database
+      final userId = await AuthService.getCurrentUserId(username);
+      final profile = await UserProfileService.getProfile();
+      if (profile == null) {
+        // Jika belum ada profile, arahkan ke wizard profile
+        Get.offAllNamed('/profile-wizard', arguments: {'userId': userId});
+      } else {
+        Get.offAllNamed('/home');
+      }
     } else {
       _error.value = 'Username atau password salah';
     }
@@ -38,14 +47,20 @@ class LoginPage extends StatelessWidget {
               children: [
                 Text(
                   'BukuPink',
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                    color: Colors.pinkAccent,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 32),
                 TextFormField(
                   controller: _usernameController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Username',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    prefixIcon: Icon(Icons.person, color: Colors.pinkAccent),
                   ),
                   validator:
                       (v) =>
@@ -57,9 +72,12 @@ class LoginPage extends StatelessWidget {
                 TextFormField(
                   controller: _passwordController,
                   obscureText: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Password',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    prefixIcon: Icon(Icons.lock, color: Colors.pinkAccent),
                   ),
                   validator:
                       (v) =>
@@ -92,6 +110,15 @@ class LoginPage extends StatelessWidget {
                                   _login();
                                 }
                               },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFFB6C1),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 0,
+                      ),
                       child:
                           _loading.value
                               ? const SizedBox(
@@ -101,7 +128,13 @@ class LoginPage extends StatelessWidget {
                                   strokeWidth: 2,
                                 ),
                               )
-                              : const Text('Login'),
+                              : const Text(
+                                'Login',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                     ),
                   ),
                 ),

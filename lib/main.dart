@@ -8,6 +8,8 @@ import 'pages_lastperiod.dart';
 import 'pages_home.dart';
 import 'pages_login.dart';
 import 'pages_signup.dart';
+import 'pages_profile.dart';
+import 'pages_profile_wizard.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,6 +60,8 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/home', page: () => HomePage()),
         GetPage(name: '/last-period', page: () => LastPeriodFormPage()),
         GetPage(name: '/dashboard', page: () => PregnancyDashboardPage()),
+        GetPage(name: '/profile', page: () => const ProfilePage()),
+        GetPage(name: '/profile-wizard', page: () => const ProfileWizardPage()),
       ],
     );
   }

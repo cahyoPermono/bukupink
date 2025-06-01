@@ -79,3 +79,82 @@ class DatabaseService {
     return null;
   }
 }
+
+// Tambahkan model UserProfile
+class UserProfile {
+  final int? id;
+  final String name;
+  final int age;
+  final double height;
+  final double weight;
+
+  UserProfile({
+    this.id,
+    required this.name,
+    required this.age,
+    required this.height,
+    required this.weight,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'age': age,
+      'height': height,
+      'weight': weight,
+    };
+  }
+
+  factory UserProfile.fromMap(Map<String, dynamic> map) {
+    return UserProfile(
+      id: map['id'],
+      name: map['name'],
+      age: map['age'],
+      height: map['height'],
+      weight: map['weight'],
+    );
+  }
+}
+
+// Tambahkan service untuk user_profile
+extension UserProfileService on DatabaseService {
+  static Future<void> createProfileTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS user_profile (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        age INTEGER,
+        height REAL,
+        weight REAL
+      )
+    ''');
+  }
+
+  static Future<UserProfile?> getProfile() async {
+    final dbClient = await DatabaseService.database;
+    await createProfileTable(dbClient);
+    final res = await dbClient.query('user_profile', limit: 1);
+    if (res.isNotEmpty) {
+      return UserProfile.fromMap(res.first);
+    }
+    return null;
+  }
+
+  static Future<int> insertProfile(UserProfile profile) async {
+    final dbClient = await DatabaseService.database;
+    await createProfileTable(dbClient);
+    return await dbClient.insert('user_profile', profile.toMap());
+  }
+
+  static Future<int> updateProfile(UserProfile profile) async {
+    final dbClient = await DatabaseService.database;
+    await createProfileTable(dbClient);
+    return await dbClient.update(
+      'user_profile',
+      profile.toMap(),
+      where: 'id = ?',
+      whereArgs: [profile.id],
+    );
+  }
+}
