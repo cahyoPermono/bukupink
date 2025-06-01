@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'controllers.dart';
-import 'pages_lastperiod.dart';
-import 'pages_dashboard.dart';
+import 'pages_pregnancy_list.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -50,22 +47,6 @@ class HomePage extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: Icon(Icons.calendar_today),
-              title: Text('Periode Terakhir'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushReplacementNamed(context, '/last-period');
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.dashboard),
-              title: Text('Dashboard'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushReplacementNamed(context, '/dashboard');
-              },
-            ),
-            ListTile(
               leading: Icon(Icons.person),
               title: Text('Profil'),
               onTap: () {
@@ -97,23 +78,10 @@ class HomePage extends StatelessWidget {
               title: 'Pemantauan Kehamilan',
               color: Color(0xFFFFB6C1),
               onTap: () {
-                final lastPeriod =
-                    Get.find<LastPeriodController>().lastPeriodDate.value;
-                if (lastPeriod == null) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const LastPeriodFormPage(),
-                    ),
-                  );
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const PregnancyDashboardPage(),
-                    ),
-                  );
-                }
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const PregnancyListPage()),
+                );
               },
             ),
             MenuCard(

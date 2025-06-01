@@ -33,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
     if (_profile == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Profil')),
+        appBar: AppBar(title: const Text('Profil'), centerTitle: true),
         body: const Center(child: Text('Data profil belum tersedia.')),
       );
     }
@@ -43,7 +43,13 @@ class _ProfilePageState extends State<ProfilePage> {
     final weight = _profile!.weight;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Profil'), centerTitle: true),
+      backgroundColor: const Color(0xFFFFF0F5),
+      appBar: AppBar(
+        title: const Text('Profil'),
+        centerTitle: true,
+        backgroundColor: Color(0xFFFFB6C1),
+        elevation: 0,
+      ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -83,22 +89,6 @@ class _ProfilePageState extends State<ProfilePage> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.calendar_today),
-              title: Text('Periode Terakhir'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushReplacementNamed(context, '/last-period');
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.dashboard),
-              title: Text('Dashboard'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushReplacementNamed(context, '/dashboard');
-              },
-            ),
-            ListTile(
               leading: Icon(Icons.person),
               title: Text('Profil'),
               selected: true,
@@ -117,56 +107,149 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Color(0xFFFFB6C1),
-                    child: Icon(Icons.person, size: 48, color: Colors.white),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                _buildProfileRow('Nama', name),
-                _buildProfileRow('Usia', '$age tahun'),
-                _buildProfileRow(
-                  'Tinggi Badan',
-                  '${height.toStringAsFixed(1)} cm',
-                ),
-                _buildProfileRow(
-                  'Berat Badan',
-                  '${weight.toStringAsFixed(1)} kg',
-                ),
-              ],
+      body: Stack(
+        children: [
+          // Cute background accent
+          Positioned(
+            top: -60,
+            left: -60,
+            child: Container(
+              width: 180,
+              height: 180,
+              decoration: BoxDecoration(
+                color: Color(0xFFFFB6C1).withOpacity(0.18),
+                shape: BoxShape.circle,
+              ),
             ),
           ),
-        ),
+          Center(
+            child: Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32),
+              ),
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 36,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [Color(0xFFFFB6C1), Color(0xFFFFC1CC)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0xFFFFB6C1).withOpacity(0.18),
+                            blurRadius: 16,
+                            offset: Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(6),
+                      child: CircleAvatar(
+                        radius: 48,
+                        backgroundColor: Colors.white,
+                        child: Icon(
+                          Icons.person,
+                          size: 54,
+                          color: Color(0xFFFFB6C1),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFB266B2),
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Profil Pengguna',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Color(0xFFB266B2).withOpacity(0.6),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    _cuteProfileRow(
+                      Icons.cake,
+                      'Usia',
+                      '$age tahun',
+                      Color(0xFFFFB6C1),
+                    ),
+                    _cuteProfileRow(
+                      Icons.height,
+                      'Tinggi Badan',
+                      '${height.toStringAsFixed(1)} cm',
+                      Color(0xFF81C784),
+                    ),
+                    _cuteProfileRow(
+                      Icons.monitor_weight,
+                      'Berat Badan',
+                      '${weight.toStringAsFixed(1)} kg',
+                      Color(0xFFFFE082),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildProfileRow(String label, String value) {
+  Widget _cuteProfileRow(
+    IconData icon,
+    String label,
+    String value,
+    Color color,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            '$label:',
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          Container(
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.13),
+              shape: BoxShape.circle,
+            ),
+            padding: const EdgeInsets.all(10),
+            child: Icon(icon, color: color, size: 22),
           ),
-          const SizedBox(width: 16),
-          Expanded(child: Text(value, style: const TextStyle(fontSize: 16))),
+          const SizedBox(width: 18),
+          Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              color: Color(0xFFB266B2),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ],
       ),
     );

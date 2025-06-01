@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'controllers.dart';
 import 'pages_dashboard.dart';
+import 'services_pregnancy.dart';
 
 class LastPeriodFormPage extends StatefulWidget {
   const LastPeriodFormPage({super.key});
@@ -13,6 +14,13 @@ class LastPeriodFormPage extends StatefulWidget {
 class _LastPeriodFormPageState extends State<LastPeriodFormPage> {
   DateTime? _selectedDate;
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +33,21 @@ class _LastPeriodFormPageState extends State<LastPeriodFormPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Tambahkan input nama kehamilan
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Nama Kehamilan',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Nama kehamilan wajib diisi';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24),
               const Text(
                 'Masukkan tanggal haid terakhir Anda',
                 style: TextStyle(fontSize: 16),
@@ -72,18 +95,27 @@ class _LastPeriodFormPageState extends State<LastPeriodFormPage> {
               const SizedBox(height: 32),
               ElevatedButton(
                 onPressed:
-                    _selectedDate == null
+                    (_selectedDate == null)
                         ? null
-                        : () {
-                          Get.find<LastPeriodController>().setLastPeriodDate(
-                            _selectedDate!,
-                          );
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const PregnancyDashboardPage(),
-                            ),
-                          );
+                        : () async {
+                          if (_formKey.currentState!.validate()) {
+                            final name = _nameController.text.trim();
+                            final date = _selectedDate!;
+                            final dateString =
+                                '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+                            await PregnancyService.insertPregnancy(
+                              Pregnancy(name: name, date: dateString),
+                            );
+                            Get.find<LastPeriodController>().setLastPeriodDate(
+                              _selectedDate!,
+                            );
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const PregnancyDashboardPage(),
+                              ),
+                            );
+                          }
                         },
                 child: const Text('Simpan'),
               ),

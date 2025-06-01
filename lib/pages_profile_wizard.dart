@@ -25,7 +25,7 @@ class _ProfileWizardPageState extends State<ProfileWizardPage>
     super.initState();
     _animController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 400),
+      duration: Duration(milliseconds: 200),
     );
     _fadeAnim = CurvedAnimation(
       parent: _animController,
@@ -46,8 +46,8 @@ class _ProfileWizardPageState extends State<ProfileWizardPage>
 
   void _nextStep() {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        _animController.reverse().then((_) {
+      _animController.reverse().then((_) {
+        setState(() {
           _step++;
           _animController.forward();
         });
