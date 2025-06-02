@@ -9,7 +9,16 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Home'), centerTitle: true),
+      backgroundColor: const Color(0xFFFFF0F6),
+      appBar: AppBar(
+        title: const Text('Home'),
+        centerTitle: true,
+        backgroundColor: const Color(0xFFFFC1CC),
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
+        ),
+      ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -72,12 +81,7 @@ class HomePage extends StatelessWidget {
                 },
               ),
             ),
-            Container(
-              height: 2,
-              color:
-                  Colors
-                      .transparent, // bisa diganti dengan Color(0xFFFFE0F0) jika masih ada garis
-            ),
+            Container(height: 2, color: Colors.transparent),
             SizedBox(height: 0),
             ListTile(
               leading: Icon(Icons.home),
@@ -112,7 +116,7 @@ class HomePage extends StatelessWidget {
           crossAxisCount: 2,
           mainAxisSpacing: 18,
           crossAxisSpacing: 18,
-          childAspectRatio: 0.85, // card lebih tinggi
+          childAspectRatio: 0.85,
           children: [
             MenuCard(
               icon: Icons.favorite,
