@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pages_pregnancy_list.dart';
+import 'pages_persiapan_kelahiran.dart';
 import '../services/services_user.dart';
 
 class HomePage extends StatelessWidget {
@@ -128,7 +129,14 @@ class HomePage extends StatelessWidget {
               icon: Icons.child_friendly,
               title: 'Persiapan Melahirkan',
               color: Color(0xFFFFC1CC),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const PersiapanKelahiranPage(),
+                  ),
+                );
+              },
             ),
             MenuCard(
               icon: Icons.family_restroom,
