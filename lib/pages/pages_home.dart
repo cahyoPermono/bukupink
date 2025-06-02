@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pages_pregnancy_list.dart';
 import 'pages_persiapan_kelahiran.dart';
+import 'pages_pasca_melahirkan.dart';
 import '../services/services_user.dart';
 
 class HomePage extends StatelessWidget {
@@ -146,7 +147,14 @@ class HomePage extends StatelessWidget {
               icon: Icons.family_restroom,
               title: 'Pasca Melahirkan',
               color: Color(0xFFB266B2),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const PascaMelahirkanPage(),
+                  ),
+                );
+              },
             ),
             MenuCard(
               icon: Icons.monitor_heart,
