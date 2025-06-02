@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'services_user.dart';
+import '../services/services_user.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -67,7 +67,7 @@ class _SignupPageState extends State<SignupPage> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.pinkAccent.withOpacity(0.08),
+                      color: Colors.pinkAccent.withValues(alpha: 0.08),
                       blurRadius: 24,
                       offset: const Offset(0, 8),
                     ),
@@ -93,7 +93,7 @@ class _SignupPageState extends State<SignupPage> {
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.pinkAccent.withOpacity(0.07),
+                      color: Colors.pinkAccent.withValues(alpha: 0.07),
                       blurRadius: 16,
                       offset: const Offset(0, 8),
                     ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'services_user.dart';
+import '../services/services_user.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -151,7 +151,7 @@ class _ProfilePageState extends State<ProfilePage> {
               width: 180,
               height: 180,
               decoration: BoxDecoration(
-                color: Color(0xFFFFB6C1).withOpacity(0.18),
+                color: Color(0xFFFFB6C1).withValues(alpha: 0.18),
                 shape: BoxShape.circle,
               ),
             ),
@@ -182,7 +182,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Color(0xFFFFB6C1).withOpacity(0.18),
+                            color: Color(0xFFFFB6C1).withValues(alpha: 0.18),
                             blurRadius: 16,
                             offset: Offset(0, 8),
                           ),
@@ -214,7 +214,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       'Profil Pengguna',
                       style: TextStyle(
                         fontSize: 15,
-                        color: Color(0xFFB266B2).withOpacity(0.6),
+                        color: Color(0xFFB266B2).withValues(alpha: 0.6),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -260,7 +260,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: color.withOpacity(0.13),
+              color: color.withValues(alpha: 0.13),
               shape: BoxShape.circle,
             ),
             padding: const EdgeInsets.all(10),

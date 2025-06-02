@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pages_lastperiod.dart';
 import 'pages_dashboard.dart';
-import 'services_pregnancy.dart';
+import '../services/services_pregnancy.dart';
 
 class PregnancyListPage extends StatefulWidget {
   const PregnancyListPage({super.key});

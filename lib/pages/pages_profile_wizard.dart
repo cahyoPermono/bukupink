@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'services_user.dart';
+import '../services/services_user.dart';
 
 class ProfileWizardPage extends StatefulWidget {
-  const ProfileWizardPage({Key? key}) : super(key: key);
+  const ProfileWizardPage({super.key});
 
   @override
   State<ProfileWizardPage> createState() => _ProfileWizardPageState();

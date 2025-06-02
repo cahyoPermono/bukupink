@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'controllers.dart';
+import '../controllers/controllers.dart';
 import 'pages_dashboard.dart';
-import 'services_pregnancy.dart';
+import '../services/services_pregnancy.dart';
 
 class LastPeriodFormPage extends StatefulWidget {
   const LastPeriodFormPage({super.key});
@@ -45,7 +45,7 @@ class _LastPeriodFormPageState extends State<LastPeriodFormPage> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.pinkAccent.withOpacity(0.08),
+                      color: Colors.pinkAccent.withValues(alpha: 0.08),
                       blurRadius: 24,
                       offset: const Offset(0, 8),
                     ),
@@ -75,7 +75,7 @@ class _LastPeriodFormPageState extends State<LastPeriodFormPage> {
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.pinkAccent.withOpacity(0.07),
+                      color: Colors.pinkAccent.withValues(alpha: 0.07),
                       blurRadius: 16,
                       offset: const Offset(0, 8),
                     ),
@@ -144,7 +144,7 @@ class _LastPeriodFormPageState extends State<LastPeriodFormPage> {
                               borderRadius: BorderRadius.circular(16),
                             ),
                             side: BorderSide(
-                              color: Colors.pinkAccent.withOpacity(0.2),
+                              color: Colors.pinkAccent.withValues(alpha: 0.2),
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 18),
                           ),

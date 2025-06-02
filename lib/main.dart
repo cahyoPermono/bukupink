@@ -2,14 +2,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'controllers.dart';
-import 'pages_dashboard.dart';
-import 'pages_lastperiod.dart';
-import 'pages_home.dart';
-import 'pages_login.dart';
-import 'pages_signup.dart';
-import 'pages_profile.dart';
-import 'pages_profile_wizard.dart';
+import 'controllers/controllers.dart';
+import 'pages/pages_dashboard.dart';
+import 'pages/pages_lastperiod.dart';
+import 'pages/pages_home.dart';
+import 'pages/pages_login.dart';
+import 'pages/pages_signup.dart';
+import 'pages/pages_profile.dart';
+import 'pages/pages_profile_wizard.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
