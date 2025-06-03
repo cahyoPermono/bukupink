@@ -31,7 +31,7 @@ class ChildGrowthPage extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.pinkAccent.withOpacity(0.08),
+                    color: Colors.pinkAccent.withValues(alpha: 0.08),
                     blurRadius: 24,
                     offset: const Offset(0, 8),
                   ),
@@ -184,7 +184,6 @@ class WeightHeightCheckPage extends StatefulWidget {
 class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
     with SingleTickerProviderStateMixin {
   List<_GrowthEntry> _entries = [];
-  final _formKey = GlobalKey<FormState>();
   final _dateController = TextEditingController();
   final _weightController = TextEditingController();
   final _heightController = TextEditingController();
@@ -219,22 +218,6 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
     });
   }
 
-  void _addEntry() async {
-    if (_formKey.currentState!.validate()) {
-      final db = await DB.database;
-      await db.insert('growth', {
-        'anak_id': widget.childId,
-        'tanggal': _dateController.text,
-        'berat': double.parse(_weightController.text),
-        'tinggi': double.parse(_heightController.text),
-      });
-      _dateController.clear();
-      _weightController.clear();
-      _heightController.clear();
-      _loadGrowth();
-    }
-  }
-
   @override
   void dispose() {
     _dateController.dispose();
@@ -248,10 +231,10 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
     showDialog(
       context: context,
       builder: (ctx) {
-        final _formKeyDialog = GlobalKey<FormState>();
-        final _dateControllerDialog = TextEditingController();
-        final _weightControllerDialog = TextEditingController();
-        final _heightControllerDialog = TextEditingController();
+        final formKeyDialog = GlobalKey<FormState>();
+        final dateControllerDialog = TextEditingController();
+        final weightControllerDialog = TextEditingController();
+        final heightControllerDialog = TextEditingController();
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
@@ -266,12 +249,12 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
           content: SizedBox(
             width: 320,
             child: Form(
-              key: _formKeyDialog,
+              key: formKeyDialog,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextFormField(
-                    controller: _dateControllerDialog,
+                    controller: dateControllerDialog,
                     decoration: InputDecoration(
                       labelText: 'Tanggal',
                       hintText: 'YYYY-MM-DD',
@@ -299,7 +282,7 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
                         lastDate: DateTime.now(),
                       );
                       if (picked != null) {
-                        _dateControllerDialog.text =
+                        dateControllerDialog.text =
                             '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
                       }
                     },
@@ -308,7 +291,7 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
-                    controller: _weightControllerDialog,
+                    controller: weightControllerDialog,
                     decoration: InputDecoration(
                       labelText: 'Berat (kg)',
                       prefixIcon: const Icon(
@@ -332,7 +315,7 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
-                    controller: _heightControllerDialog,
+                    controller: heightControllerDialog,
                     decoration: InputDecoration(
                       labelText: 'Tinggi (cm)',
                       prefixIcon: const Icon(
@@ -372,13 +355,13 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
                 ),
               ),
               onPressed: () async {
-                if (_formKeyDialog.currentState!.validate()) {
+                if (formKeyDialog.currentState!.validate()) {
                   final db = await DB.database;
                   await db.insert('growth', {
                     'anak_id': widget.childId,
-                    'tanggal': _dateControllerDialog.text,
-                    'berat': double.parse(_weightControllerDialog.text),
-                    'tinggi': double.parse(_heightControllerDialog.text),
+                    'tanggal': dateControllerDialog.text,
+                    'berat': double.parse(weightControllerDialog.text),
+                    'tinggi': double.parse(heightControllerDialog.text),
                   });
                   Navigator.pop(ctx);
                   _loadGrowth();
@@ -572,7 +555,9 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
                             borderRadius: BorderRadius.circular(18),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.pinkAccent.withOpacity(0.07),
+                                color: Colors.pinkAccent.withValues(
+                                  alpha: 0.07,
+                                ),
                                 blurRadius: 12,
                                 offset: const Offset(0, 4),
                               ),
@@ -609,7 +594,9 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
                             borderRadius: BorderRadius.circular(18),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.pinkAccent.withOpacity(0.07),
+                                color: Colors.pinkAccent.withValues(
+                                  alpha: 0.07,
+                                ),
                                 blurRadius: 12,
                                 offset: const Offset(0, 4),
                               ),
@@ -926,7 +913,7 @@ class _ImmunizationSchedulePageState extends State<ImmunizationSchedulePage> {
                 borderRadius: BorderRadius.circular(18),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.pinkAccent.withOpacity(0.07),
+                    color: Colors.pinkAccent.withValues(alpha: 0.07),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -980,7 +967,7 @@ class _ImmunizationSchedulePageState extends State<ImmunizationSchedulePage> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.greenAccent.withOpacity(0.15),
+                          color: Colors.greenAccent.withValues(alpha: 0.15),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -1034,7 +1021,9 @@ class _ImmunizationSchedulePageState extends State<ImmunizationSchedulePage> {
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.pinkAccent.withOpacity(0.07),
+                                  color: Colors.pinkAccent.withValues(
+                                    alpha: 0.07,
+                                  ),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
@@ -1310,11 +1299,11 @@ class ChildDevelopmentPage extends StatelessWidget {
                   final d = devs[i];
                   return Container(
                     decoration: BoxDecoration(
-                      color: d.color.withOpacity(0.18),
+                      color: d.color.withValues(alpha: 0.18),
                       borderRadius: BorderRadius.circular(22),
                       boxShadow: [
                         BoxShadow(
-                          color: d.color.withOpacity(0.10),
+                          color: d.color.withValues(alpha: 0.10),
                           blurRadius: 14,
                           offset: const Offset(0, 6),
                         ),
@@ -1334,7 +1323,7 @@ class ChildDevelopmentPage extends StatelessWidget {
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: d.color.withOpacity(0.18),
+                                  color: d.color.withValues(alpha: 0.18),
                                   blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),
