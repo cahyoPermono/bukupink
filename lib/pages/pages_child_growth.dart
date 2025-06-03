@@ -674,20 +674,82 @@ class _SimpleLineChart extends StatelessWidget {
     if (entries.length < 2) {
       return const Center(child: Text('Belum cukup data untuk grafik.'));
     }
+    // Cari min dan max value untuk weight/height
+    final values = entries.map((e) => isWeight ? e.weight : e.height).toList();
+    final minValue = values.reduce((a, b) => a < b ? a : b);
+    final maxValue = values.reduce((a, b) => a > b ? a : b);
+    // Untuk tinggi, pastikan maxValue minimal 200 agar skala cukup
+    final double chartMax =
+        isWeight ? (maxValue + 2) : ((maxValue > 180 ? maxValue + 10 : 200));
+    final double chartMin =
+        isWeight ? (minValue - 2 < 0 ? 0 : minValue - 2) : 0;
+    final double chartHeight = 180;
+    final double chartWidth = (entries.length - 1) * 40.0 + 40;
     final points =
-        entries
-            .asMap()
-            .entries
-            .map(
-              (e) => Offset(
-                e.key * 40.0 + 10,
-                160 - ((isWeight ? e.value.weight : e.value.height) * 4),
-              ),
-            )
-            .toList();
-    return CustomPaint(
-      painter: _LineChartPainter(points: points, isWeight: isWeight),
-      child: Container(),
+        entries.asMap().entries.map((e) {
+          final value = isWeight ? e.value.weight : e.value.height;
+          final y =
+              chartHeight -
+              ((value - chartMin) / (chartMax - chartMin) * chartHeight);
+          return Offset(e.key * 40.0 + 20, y);
+        }).toList();
+    return Stack(
+      children: [
+        CustomPaint(
+          painter: _LineChartPainter(
+            points: points,
+            isWeight: isWeight,
+            minValue: chartMin,
+            maxValue: chartMax,
+            entries: entries,
+          ),
+          size: Size(chartWidth, chartHeight),
+        ),
+        // Tambahkan label angka di sumbu Y
+        Positioned(
+          left: 0,
+          top: 0,
+          bottom: 0,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              for (var i = 0; i <= 4; i++)
+                Text(
+                  (chartMax - (i * (chartMax - chartMin) / 4)).toStringAsFixed(
+                    0,
+                  ),
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: Color(0xFFB266B2),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        // Tambahkan label tanggal di bawah tiap titik
+        Positioned(
+          left: 0,
+          bottom: 0,
+          right: 0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              for (var i = 0; i < entries.length; i++)
+                SizedBox(
+                  width: 40,
+                  child: Text(
+                    entries[i].date.substring(5),
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: Color(0xFFD291BC),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -695,7 +757,16 @@ class _SimpleLineChart extends StatelessWidget {
 class _LineChartPainter extends CustomPainter {
   final List<Offset> points;
   final bool isWeight;
-  _LineChartPainter({required this.points, required this.isWeight});
+  final double minValue;
+  final double maxValue;
+  final List<_GrowthEntry> entries;
+  _LineChartPainter({
+    required this.points,
+    required this.isWeight,
+    required this.minValue,
+    required this.maxValue,
+    required this.entries,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -709,18 +780,25 @@ class _LineChartPainter extends CustomPainter {
         canvas.drawLine(points[i], points[i + 1], paint);
       }
     }
-    for (final p in points) {
+    for (int i = 0; i < points.length; i++) {
+      final p = points[i];
       canvas.drawCircle(p, 4, Paint()..color = paint.color);
+      // Tambahkan angka di atas titik
+      final value = isWeight ? entries[i].weight : entries[i].height;
+      final tp = TextPainter(
+        text: TextSpan(
+          text: value.toStringAsFixed(1),
+          style: const TextStyle(
+            fontSize: 11,
+            color: Color(0xFFB266B2),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      tp.layout();
+      tp.paint(canvas, Offset(p.dx - tp.width / 2, p.dy - 18));
     }
-    final textPainter = TextPainter(
-      text: TextSpan(
-        text: isWeight ? 'Grafik Berat Badan' : 'Grafik Tinggi Badan',
-        style: const TextStyle(fontSize: 13, color: Colors.black54),
-      ),
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.layout();
-    textPainter.paint(canvas, const Offset(0, 0));
   }
 
   @override
