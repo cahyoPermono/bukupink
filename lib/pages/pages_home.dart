@@ -1,3 +1,4 @@
+import 'package:bukupink/pages/pages_child_list.dart';
 import 'package:flutter/material.dart';
 import 'pages_pregnancy_list.dart';
 import 'pages_persiapan_kelahiran.dart';
@@ -160,7 +161,12 @@ class HomePage extends StatelessWidget {
               icon: Icons.monitor_heart,
               title: 'Pemantauan Tumbuh Kembang Anak',
               color: Color(0xFF81C784),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ChildListPage()),
+                );
+              },
             ),
             MenuCard(
               icon: Icons.local_dining,

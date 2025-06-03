@@ -10,6 +10,7 @@ import 'pages/pages_login.dart';
 import 'pages/pages_signup.dart';
 import 'pages/pages_profile.dart';
 import 'pages/pages_profile_wizard.dart';
+import 'pages/pages_child_list.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,7 +34,6 @@ class MyApp extends StatelessWidget {
           seedColor: Color(0xFFFFB6C1),
           primary: Color(0xFFFFB6C1),
           secondary: Color(0xFFFFC1CC),
-          // background: Color(0xFFFFF0F5),
           surface: Color(0xFFFFF0F5),
           onPrimary: Colors.white,
         ),
@@ -54,8 +54,9 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      initialRoute: '/login',
+      initialRoute: '/home',
       getPages: [
+        GetPage(name: '/child-list', page: () => const ChildListPage()),
         GetPage(name: '/login', page: () => LoginPage()),
         GetPage(name: '/signup', page: () => SignupPage()),
         GetPage(name: '/home', page: () => HomePage()),
