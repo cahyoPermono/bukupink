@@ -40,32 +40,151 @@ class _ChildListPageState extends State<ChildListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFFF0F6),
       appBar: AppBar(
         title: const Text('Daftar Anak'),
-        backgroundColor: const Color(0xFFFFB6C1),
+        centerTitle: true,
+        backgroundColor: const Color(0xFFFFC1CC),
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add, color: Color(0xFFB266B2)),
+            tooltip: 'Tambah Anak',
             onPressed: _showAddChildDialog,
           ),
         ],
       ),
       body:
           _children.isEmpty
-              ? const Center(child: Text('Belum ada data anak.'))
-              : ListView.builder(
+              ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/icons/cute_baby.png',
+                      height: 120,
+                      errorBuilder:
+                          (c, o, s) => Icon(
+                            Icons.child_care,
+                            size: 80,
+                            color: Colors.pink[200],
+                          ),
+                    ),
+                    const SizedBox(height: 18),
+                    const Text(
+                      'Belum ada data anak',
+                      style: TextStyle(
+                        color: Color(0xFFD291BC),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Yuk, tambahkan data anak! 👶',
+                      style: TextStyle(color: Color(0xFFB266B2), fontSize: 15),
+                    ),
+                  ],
+                ),
+              )
+              : ListView.separated(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 28,
+                  horizontal: 18,
+                ),
                 itemCount: _children.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 18),
                 itemBuilder: (context, i) {
                   final c = _children[i];
-                  return Card(
-                    child: ListTile(
-                      leading: Icon(
-                        c['jenis_kelamin'] == 'L' ? Icons.boy : Icons.girl,
-                        color: Colors.pink[300],
+                  return GestureDetector(
+                    onTap: () => _openChildMenu(c),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(22),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.pinkAccent.withOpacity(0.07),
+                            blurRadius: 14,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
                       ),
-                      title: Text(c['nama']),
-                      subtitle: Text('Lahir: ${c['tanggal_lahir']}'),
-                      onTap: () => _openChildMenu(c),
+                      child: Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color:
+                                  c['jenis_kelamin'] == 'L'
+                                      ? Colors.blue[50]
+                                      : Colors.pink[50],
+                              shape: BoxShape.circle,
+                            ),
+                            padding: const EdgeInsets.all(18),
+                            child: Icon(
+                              c['jenis_kelamin'] == 'L'
+                                  ? Icons.boy
+                                  : Icons.girl,
+                              size: 38,
+                              color:
+                                  c['jenis_kelamin'] == 'L'
+                                      ? Colors.blue[300]
+                                      : Colors.pink[200],
+                            ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 18,
+                                horizontal: 0,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    c['nama'],
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: Color(0xFFB266B2),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.cake_rounded,
+                                        color: Color(0xFFFFB6C1),
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        'Lahir: ${c['tanggal_lahir']}',
+                                        style: const TextStyle(
+                                          color: Color(0xFFB266B2),
+                                          fontSize: 14.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(right: 18),
+                            child: Icon(
+                              Icons.chevron_right_rounded,
+                              color: Color(0xFFD291BC),
+                              size: 28,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },

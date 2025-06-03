@@ -158,81 +158,128 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFFF0F6),
       appBar: AppBar(
         title: const Text('Cek Berat Badan / Tinggi'),
         backgroundColor: const Color(0xFFFFB6C1),
+        centerTitle: true,
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
+        ),
         bottom: TabBar(
           controller: _tabController,
           tabs: const [Tab(text: 'Tabel'), Tab(text: 'Grafik')],
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(18),
         child: Column(
           children: [
-            Form(
-              key: _formKey,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _dateController,
-                      decoration: const InputDecoration(
-                        labelText: 'Tanggal',
-                        hintText: 'YYYY-MM-DD',
-                        icon: Icon(Icons.calendar_today),
-                      ),
-                      validator:
-                          (v) => v == null || v.isEmpty ? 'Isi tanggal' : null,
-                      onTap: () async {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                        final picked = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2020),
-                          lastDate: DateTime.now(),
-                        );
-                        if (picked != null) {
-                          _dateController.text =
-                              '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
-                        }
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _weightController,
-                      decoration: const InputDecoration(
-                        labelText: 'Berat (kg)',
-                        icon: Icon(Icons.monitor_weight),
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator:
-                          (v) => v == null || v.isEmpty ? 'Isi berat' : null,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _heightController,
-                      decoration: const InputDecoration(
-                        labelText: 'Tinggi (cm)',
-                        icon: Icon(Icons.height),
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator:
-                          (v) => v == null || v.isEmpty ? 'Isi tinggi' : null,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(
-                      Icons.add_circle,
-                      color: Color(0xFF81C784),
-                    ),
-                    onPressed: _addEntry,
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.pinkAccent.withOpacity(0.08),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
                   ),
                 ],
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+              child: Form(
+                key: _formKey,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _dateController,
+                        decoration: InputDecoration(
+                          labelText: 'Tanggal',
+                          hintText: 'YYYY-MM-DD',
+                          prefixIcon: const Icon(
+                            Icons.calendar_today,
+                            color: Color(0xFFD291BC),
+                          ),
+                          filled: true,
+                          fillColor: Colors.pink[50],
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        validator:
+                            (v) =>
+                                v == null || v.isEmpty ? 'Isi tanggal' : null,
+                        onTap: () async {
+                          FocusScope.of(context).requestFocus(FocusNode());
+                          final picked = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2020),
+                            lastDate: DateTime.now(),
+                          );
+                          if (picked != null) {
+                            _dateController.text =
+                                '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _weightController,
+                        decoration: InputDecoration(
+                          labelText: 'Berat (kg)',
+                          prefixIcon: const Icon(
+                            Icons.monitor_weight,
+                            color: Color(0xFFD291BC),
+                          ),
+                          filled: true,
+                          fillColor: Colors.pink[50],
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
+                        validator:
+                            (v) => v == null || v.isEmpty ? 'Isi berat' : null,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _heightController,
+                        decoration: InputDecoration(
+                          labelText: 'Tinggi (cm)',
+                          prefixIcon: const Icon(
+                            Icons.height,
+                            color: Color(0xFFD291BC),
+                          ),
+                          filled: true,
+                          fillColor: Colors.pink[50],
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
+                        validator:
+                            (v) => v == null || v.isEmpty ? 'Isi tinggi' : null,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.add_circle,
+                        color: Color(0xFF81C784),
+                        size: 32,
+                      ),
+                      tooltip: 'Tambah Data',
+                      onPressed: _addEntry,
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 18),
@@ -242,14 +289,63 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
                 children: [
                   // Tab 1: Tabel
                   _entries.isEmpty
-                      ? const Center(child: Text('Belum ada data.'))
+                      ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/icons/cute_baby.png',
+                            height: 90,
+                            errorBuilder:
+                                (c, o, s) => Icon(
+                                  Icons.monitor_weight,
+                                  size: 60,
+                                  color: Colors.pink[200],
+                                ),
+                          ),
+                          const SizedBox(height: 16),
+                          const Text(
+                            'Belum ada data.',
+                            style: TextStyle(
+                              color: Color(0xFFD291BC),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      )
                       : ListView(
                         children: [
                           DataTable(
+                            headingRowColor: MaterialStateProperty.all(
+                              const Color(0xFFFFF0F6),
+                            ),
                             columns: const [
-                              DataColumn(label: Text('Tanggal')),
-                              DataColumn(label: Text('Berat')),
-                              DataColumn(label: Text('Tinggi')),
+                              DataColumn(
+                                label: Text(
+                                  'Tanggal',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFFB266B2),
+                                  ),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Berat',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFFB266B2),
+                                  ),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Tinggi',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFFB266B2),
+                                  ),
+                                ),
+                              ),
                             ],
                             rows:
                                 _entries
@@ -273,19 +369,77 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
                   // Tab 2: Grafik
                   ListView(
                     children: [
-                      SizedBox(
-                        height: 180,
-                        child: _SimpleLineChart(
-                          entries: _entries,
-                          isWeight: true,
+                      const SizedBox(height: 12),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(18),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.pinkAccent.withOpacity(0.07),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.all(12),
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 8,
+                        ),
+                        child: Column(
+                          children: [
+                            const Text(
+                              'Grafik Berat Badan',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFB266B2),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 180,
+                              child: _SimpleLineChart(
+                                entries: _entries,
+                                isWeight: true,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        height: 180,
-                        child: _SimpleLineChart(
-                          entries: _entries,
-                          isWeight: false,
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(18),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.pinkAccent.withOpacity(0.07),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.all(12),
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 8,
+                        ),
+                        child: Column(
+                          children: [
+                            const Text(
+                              'Grafik Tinggi Badan',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFB266B2),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 180,
+                              child: _SimpleLineChart(
+                                entries: _entries,
+                                isWeight: false,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
