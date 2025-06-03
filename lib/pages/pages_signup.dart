@@ -214,10 +214,10 @@ class _SignupPageState extends State<SignupPage> {
                       TextButton(
                         onPressed:
                             _loading ? null : () => Get.offAllNamed('/login'),
-                        child: const Text('Sudah punya akun? Login'),
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.pink[300],
                         ),
+                        child: const Text('Sudah punya akun? Login'),
                       ),
                     ],
                   ),

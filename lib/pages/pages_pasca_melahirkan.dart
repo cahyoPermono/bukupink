@@ -26,7 +26,7 @@ class PascaMelahirkanPage extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.pinkAccent.withOpacity(0.08),
+                    color: Colors.pinkAccent.withValues(alpha: 0.08),
                     blurRadius: 24,
                     offset: const Offset(0, 8),
                   ),
@@ -104,7 +104,7 @@ class PascaMelahirkanPage extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: item.color.withOpacity(0.18),
+                  color: item.color.withValues(alpha: 0.18),
                   shape: BoxShape.circle,
                 ),
                 padding: const EdgeInsets.all(14),

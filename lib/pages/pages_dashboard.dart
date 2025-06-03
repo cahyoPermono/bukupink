@@ -88,7 +88,7 @@ class PregnancyDashboardPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(32),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.pinkAccent.withOpacity(0.08),
+                  color: Colors.pinkAccent.withValues(alpha: 0.08),
                   blurRadius: 24,
                   offset: const Offset(0, 8),
                 ),
