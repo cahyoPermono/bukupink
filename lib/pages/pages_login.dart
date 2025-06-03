@@ -185,10 +185,10 @@ class LoginPage extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () => Get.offAllNamed('/signup'),
-                        child: const Text('Belum punya akun? Daftar'),
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.pink[300],
                         ),
+                        child: const Text('Belum punya akun? Daftar'),
                       ),
                     ],
                   ),
