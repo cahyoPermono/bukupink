@@ -404,9 +404,37 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
         ),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [Tab(text: 'Tabel'), Tab(text: 'Grafik')],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(56),
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.pink[50],
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: TabBar(
+              controller: _tabController,
+              indicator: BoxDecoration(
+                color: const Color(0xFFFFB6C1),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              indicatorWeight: 0,
+              labelColor: const Color(0xFFB266B2),
+              unselectedLabelColor: const Color(0xFFD291BC),
+              labelStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15.5,
+                fontFamily: 'Nunito',
+              ),
+              unselectedLabelStyle: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 15.5,
+                fontFamily: 'Nunito',
+              ),
+              tabs: const [Tab(text: 'Tabel'), Tab(text: 'Grafik')],
+              splashFactory: InkRipple.splashFactory,
+            ),
+          ),
         ),
       ),
       body: Padding(

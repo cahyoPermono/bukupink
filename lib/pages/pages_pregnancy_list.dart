@@ -69,83 +69,86 @@ class _PregnancyListPageState extends State<PregnancyListPage> {
               ? const Center(child: CircularProgressIndicator())
               : Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 24, bottom: 8),
-                    child: Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.pink[50],
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.pinkAccent.withValues(
-                                  alpha: 0.08,
+                  if (pregnancies.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 24, bottom: 8),
+                      child: Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.pink[50],
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.pinkAccent.withValues(
+                                    alpha: 0.08,
+                                  ),
+                                  blurRadius: 24,
+                                  offset: const Offset(0, 8),
                                 ),
-                                blurRadius: 24,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
+                              ],
+                            ),
+                            padding: const EdgeInsets.all(22),
+                            child: const Icon(
+                              Icons.favorite_rounded,
+                              size: 48,
+                              color: Color(0xFFD291BC),
+                            ),
                           ),
-                          padding: const EdgeInsets.all(22),
-                          child: const Icon(
-                            Icons.favorite_rounded,
-                            size: 48,
-                            color: Color(0xFFD291BC),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Riwayat Kehamilan',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.headlineSmall?.copyWith(
+                              color: const Color(0xFFD291BC),
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.1,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          'Riwayat Kehamilan',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.headlineSmall?.copyWith(
-                            color: const Color(0xFFD291BC),
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.1,
+                          const SizedBox(height: 4),
+                          const Text(
+                            'Pantau dan simpan perjalanan kehamilanmu di sini',
+                            style: TextStyle(
+                              color: Color(0xFFB266B2),
+                              fontSize: 15,
+                              fontFamily: 'Nunito',
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          'Pantau dan simpan perjalanan kehamilanmu di sini',
-                          style: TextStyle(
-                            color: Color(0xFFB266B2),
-                            fontSize: 15,
-                            fontFamily: 'Nunito',
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
                   Expanded(
                     child:
                         pregnancies.isEmpty
-                            ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/empty_pregnancy.png',
-                                  height: 120,
-                                ),
-                                const SizedBox(height: 16),
-                                const Text(
-                                  'Belum ada kehamilan terdaftar',
-                                  style: TextStyle(
-                                    color: Color(0xFFD291BC),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
+                            ? Center(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Image.asset(
+                                    'assets/empty_pregnancy.png',
+                                    height: 120,
                                   ),
-                                ),
-                                const SizedBox(height: 8),
-                                const Text(
-                                  'Yuk, tambahkan kehamilan pertamamu! 🍼',
-                                  style: TextStyle(
-                                    color: Color(0xFFB266B2),
-                                    fontSize: 15,
+                                  const SizedBox(height: 16),
+                                  const Text(
+                                    'Belum ada kehamilan terdaftar',
+                                    style: TextStyle(
+                                      color: Color(0xFFD291BC),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(height: 8),
+                                  const Text(
+                                    'Yuk, tambahkan kehamilan pertamamu! 🍼',
+                                    style: TextStyle(
+                                      color: Color(0xFFB266B2),
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             )
                             : ListView.builder(
                               padding: const EdgeInsets.symmetric(
