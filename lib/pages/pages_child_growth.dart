@@ -244,6 +244,154 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
     super.dispose();
   }
 
+  void _showAddEntryDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        final _formKeyDialog = GlobalKey<FormState>();
+        final _dateControllerDialog = TextEditingController();
+        final _weightControllerDialog = TextEditingController();
+        final _heightControllerDialog = TextEditingController();
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+          title: const Text(
+            'Tambah Data Berat/Tinggi',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Color(0xFFB266B2),
+            ),
+          ),
+          content: SizedBox(
+            width: 320,
+            child: Form(
+              key: _formKeyDialog,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: _dateControllerDialog,
+                    decoration: InputDecoration(
+                      labelText: 'Tanggal',
+                      hintText: 'YYYY-MM-DD',
+                      prefixIcon: const Icon(
+                        Icons.calendar_today,
+                        color: Color(0xFFD291BC),
+                      ),
+                      filled: true,
+                      fillColor: Colors.pink[50],
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      labelStyle: const TextStyle(
+                        color: Color(0xFFB266B2),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    readOnly: true,
+                    onTap: () async {
+                      final picked = await showDatePicker(
+                        context: ctx,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2020),
+                        lastDate: DateTime.now(),
+                      );
+                      if (picked != null) {
+                        _dateControllerDialog.text =
+                            '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
+                      }
+                    },
+                    validator:
+                        (v) => v == null || v.isEmpty ? 'Isi tanggal' : null,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _weightControllerDialog,
+                    decoration: InputDecoration(
+                      labelText: 'Berat (kg)',
+                      prefixIcon: const Icon(
+                        Icons.monitor_weight,
+                        color: Color(0xFFD291BC),
+                      ),
+                      filled: true,
+                      fillColor: Colors.pink[50],
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      labelStyle: const TextStyle(
+                        color: Color(0xFFB266B2),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator:
+                        (v) => v == null || v.isEmpty ? 'Isi berat' : null,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _heightControllerDialog,
+                    decoration: InputDecoration(
+                      labelText: 'Tinggi (cm)',
+                      prefixIcon: const Icon(
+                        Icons.height,
+                        color: Color(0xFFD291BC),
+                      ),
+                      filled: true,
+                      fillColor: Colors.pink[50],
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      labelStyle: const TextStyle(
+                        color: Color(0xFFB266B2),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator:
+                        (v) => v == null || v.isEmpty ? 'Isi tinggi' : null,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Batal'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF81C784),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () async {
+                if (_formKeyDialog.currentState!.validate()) {
+                  final db = await DB.database;
+                  await db.insert('growth', {
+                    'anak_id': widget.childId,
+                    'tanggal': _dateControllerDialog.text,
+                    'berat': double.parse(_weightControllerDialog.text),
+                    'tinggi': double.parse(_heightControllerDialog.text),
+                  });
+                  Navigator.pop(ctx);
+                  _loadGrowth();
+                }
+              },
+              child: const Text('Simpan'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -278,97 +426,27 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
                 ],
               ),
               padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
-              child: Form(
-                key: _formKey,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _dateController,
-                        decoration: InputDecoration(
-                          labelText: 'Tanggal',
-                          hintText: 'YYYY-MM-DD',
-                          prefixIcon: const Icon(
-                            Icons.calendar_today,
-                            color: Color(0xFFD291BC),
-                          ),
-                          filled: true,
-                          fillColor: Colors.pink[50],
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
-                        validator:
-                            (v) =>
-                                v == null || v.isEmpty ? 'Isi tanggal' : null,
-                        onTap: () async {
-                          FocusScope.of(context).requestFocus(FocusNode());
-                          final picked = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(2020),
-                            lastDate: DateTime.now(),
-                          );
-                          if (picked != null) {
-                            _dateController.text =
-                                '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
-                          }
-                        },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFB266B2),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      textStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextFormField(
-                        controller: _weightController,
-                        decoration: InputDecoration(
-                          labelText: 'Berat (kg)',
-                          prefixIcon: const Icon(
-                            Icons.monitor_weight,
-                            color: Color(0xFFD291BC),
-                          ),
-                          filled: true,
-                          fillColor: Colors.pink[50],
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
-                        keyboardType: TextInputType.number,
-                        validator:
-                            (v) => v == null || v.isEmpty ? 'Isi berat' : null,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextFormField(
-                        controller: _heightController,
-                        decoration: InputDecoration(
-                          labelText: 'Tinggi (cm)',
-                          prefixIcon: const Icon(
-                            Icons.height,
-                            color: Color(0xFFD291BC),
-                          ),
-                          filled: true,
-                          fillColor: Colors.pink[50],
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
-                        keyboardType: TextInputType.number,
-                        validator:
-                            (v) => v == null || v.isEmpty ? 'Isi tinggi' : null,
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.add_circle,
-                        color: Color(0xFF81C784),
-                        size: 32,
-                      ),
-                      tooltip: 'Tambah Data',
-                      onPressed: _addEntry,
-                    ),
-                  ],
-                ),
+                    icon: const Icon(Icons.add),
+                    label: const Text('Tambah Data Berat/Tinggi'),
+                    onPressed: () => _showAddEntryDialog(context),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 18),
