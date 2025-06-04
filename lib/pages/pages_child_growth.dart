@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../services/db.dart';
 
 class ChildGrowthPage extends StatelessWidget {
@@ -363,7 +364,7 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
                     'berat': double.parse(weightControllerDialog.text),
                     'tinggi': double.parse(heightControllerDialog.text),
                   });
-                  Navigator.pop(ctx);
+                  Get.back();
                   _loadGrowth();
                 }
               },
@@ -493,7 +494,7 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
                       : ListView(
                         children: [
                           DataTable(
-                            headingRowColor: MaterialStateProperty.all(
+                            headingRowColor: WidgetStateProperty.all(
                               const Color(0xFFFFF0F6),
                             ),
                             columns: const [

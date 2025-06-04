@@ -220,11 +220,14 @@ class MenuCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(28),
           ),
           elevation: 2.5,
-          shadowColor: color.withOpacity(0.18),
+          shadowColor: color.withValues(alpha: 0.18),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(28),
-              border: Border.all(color: color.withOpacity(0.22), width: 1.5),
+              border: Border.all(
+                color: color.withValues(alpha: 0.22),
+                width: 1.5,
+              ),
             ),
             padding: const EdgeInsets.symmetric(
               vertical: 18,
@@ -237,11 +240,11 @@ class MenuCard extends StatelessWidget {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.16),
+                    color: color.withValues(alpha: 0.16),
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: color.withOpacity(0.12),
+                        color: color.withValues(alpha: 0.12),
                         blurRadius: 12,
                         offset: Offset(0, 4),
                       ),
@@ -250,7 +253,7 @@ class MenuCard extends StatelessWidget {
                   padding: const EdgeInsets.all(12), // padding icon dikurangi
                   child: Icon(
                     icon,
-                    color: color.withOpacity(0.95),
+                    color: color.withValues(alpha: 0.95),
                     size: 32,
                   ), // icon lebih kecil
                 ),

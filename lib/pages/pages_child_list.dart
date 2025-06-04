@@ -1,5 +1,6 @@
 import 'package:bukupink/pages/pages_child_growth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../services/db.dart';
 
 class ChildListPage extends StatefulWidget {
@@ -107,7 +108,7 @@ class _ChildListPageState extends State<ChildListPage> {
                         borderRadius: BorderRadius.circular(22),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.pinkAccent.withOpacity(0.07),
+                            color: Colors.pinkAccent.withValues(alpha: 0.07),
                             blurRadius: 14,
                             offset: const Offset(0, 6),
                           ),
@@ -222,7 +223,7 @@ class _AddChildDialogState extends State<AddChildDialog> {
         'jenis_kelamin': _gender,
       });
       widget.onSaved();
-      Navigator.pop(context);
+      Get.back();
     }
   }
 

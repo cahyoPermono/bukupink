@@ -181,14 +181,7 @@ class _LastPeriodFormPageState extends State<LastPeriodFormPage> {
                                       );
                                       Get.find<LastPeriodController>()
                                           .setLastPeriodDate(_selectedDate!);
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (_) =>
-                                                  const PregnancyDashboardPage(),
-                                        ),
-                                      );
+                                      Get.to(() => PregnancyDashboardPage());
                                     }
                                   },
                           style: ElevatedButton.styleFrom(
