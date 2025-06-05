@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/services.dart';
 import '../services/services_user.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -133,9 +134,9 @@ class _ProfilePageState extends State<ProfilePage> {
             ListTile(
               leading: Icon(Icons.logout),
               title: Text('Logout'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
-                Navigator.pushReplacementNamed(context, '/login');
+                await AuthService.logout();
               },
             ),
           ],

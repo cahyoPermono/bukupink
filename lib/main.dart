@@ -11,6 +11,7 @@ import 'pages/pages_signup.dart';
 import 'pages/pages_profile.dart';
 import 'pages/pages_profile_wizard.dart';
 import 'pages/pages_child_list.dart';
+import 'services/services.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,44 +28,58 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'BukuPink',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Color(0xFFFFB6C1),
-          primary: Color(0xFFFFB6C1),
-          secondary: Color(0xFFFFC1CC),
-          surface: Color(0xFFFFF0F5),
-          onPrimary: Colors.white,
-        ),
-        scaffoldBackgroundColor: Color(0xFFFFF0F5),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFFFFB6C1),
-          foregroundColor: Colors.white,
-          elevation: 0,
-        ),
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: Color(0xFFFFB6C1),
-        ),
-        fontFamily: 'Roboto',
-        textTheme: const TextTheme(
-          headlineMedium: TextStyle(
-            color: Color(0xFFB266B2),
-            fontWeight: FontWeight.bold,
+    return FutureBuilder(
+      future: AuthService.isLoggedIn(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const MaterialApp(
+            home: Scaffold(body: Center(child: CircularProgressIndicator())),
+          );
+        }
+        final loggedIn = snapshot.data as bool;
+        return GetMaterialApp(
+          title: 'BukuPink',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Color(0xFFFFB6C1),
+              primary: Color(0xFFFFB6C1),
+              secondary: Color(0xFFFFC1CC),
+              surface: Color(0xFFFFF0F5),
+              onPrimary: Colors.white,
+            ),
+            scaffoldBackgroundColor: Color(0xFFFFF0F5),
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Color(0xFFFFB6C1),
+              foregroundColor: Colors.white,
+              elevation: 0,
+            ),
+            floatingActionButtonTheme: const FloatingActionButtonThemeData(
+              backgroundColor: Color(0xFFFFB6C1),
+            ),
+            fontFamily: 'Roboto',
+            textTheme: const TextTheme(
+              headlineMedium: TextStyle(
+                color: Color(0xFFB266B2),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
-        ),
-      ),
-      initialRoute: '/home',
-      getPages: [
-        GetPage(name: '/child-list', page: () => const ChildListPage()),
-        GetPage(name: '/login', page: () => LoginPage()),
-        GetPage(name: '/signup', page: () => SignupPage()),
-        GetPage(name: '/home', page: () => HomePage()),
-        GetPage(name: '/last-period', page: () => LastPeriodFormPage()),
-        GetPage(name: '/dashboard', page: () => PregnancyDashboardPage()),
-        GetPage(name: '/profile', page: () => const ProfilePage()),
-        GetPage(name: '/profile-wizard', page: () => const ProfileWizardPage()),
-      ],
+          initialRoute: loggedIn ? '/home' : '/login',
+          getPages: [
+            GetPage(name: '/login', page: () => LoginPage()),
+            GetPage(name: '/signup', page: () => SignupPage()),
+            GetPage(name: '/home', page: () => HomePage()),
+            GetPage(name: '/child-list', page: () => const ChildListPage()),
+            GetPage(name: '/last-period', page: () => LastPeriodFormPage()),
+            GetPage(name: '/dashboard', page: () => PregnancyDashboardPage()),
+            GetPage(name: '/profile', page: () => const ProfilePage()),
+            GetPage(
+              name: '/profile-wizard',
+              page: () => const ProfileWizardPage(),
+            ),
+          ],
+        );
+      },
     );
   }
 }

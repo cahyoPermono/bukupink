@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 import 'pages_lastperiod.dart';
 import 'pages_dashboard.dart';
 import '../services/services_pregnancy.dart';
@@ -13,11 +16,57 @@ class PregnancyListPage extends StatefulWidget {
 class _PregnancyListPageState extends State<PregnancyListPage> {
   List<Pregnancy> pregnancies = [];
   bool isLoading = true;
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
     super.initState();
+    tz.initializeTimeZones(); // Inisialisasi timezone
+    _initNotifications();
     fetchPregnancies();
+  }
+
+  Future<void> _initNotifications() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  // Fungsi untuk menjadwalkan notifikasi bulanan hingga bulan ke-9
+  Future<void> scheduleMonthlyReminders(Pregnancy pregnancy) async {
+    final startDate = DateTime.parse(pregnancy.date);
+    final location = tz.local;
+    for (int i = 1; i <= 9; i++) {
+      final reminderDate = tz.TZDateTime(
+        location,
+        startDate.year,
+        startDate.month + i,
+        startDate.day,
+        9, // jam 9 pagi
+      );
+      if (reminderDate.isAfter(tz.TZDateTime.now(location))) {
+        await flutterLocalNotificationsPlugin.zonedSchedule(
+          pregnancy.hashCode + i, // unique id
+          'Reminder Kehamilan Bulan ke-$i',
+          'Jangan lupa cek perkembangan kehamilan bulan ke-$i! di Dokter atau Bidan Terdekat',
+          reminderDate,
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'pregnancy_channel',
+              'Reminder Kehamilan',
+              channelDescription: 'Notifikasi bulanan kehamilan',
+              importance: Importance.max,
+              priority: Priority.high,
+            ),
+          ),
+          androidScheduleMode:
+              AndroidScheduleMode.exactAllowWhileIdle, // Tambahkan baris ini
+        );
+      }
+    }
   }
 
   Future<void> fetchPregnancies() async {
@@ -30,6 +79,7 @@ class _PregnancyListPageState extends State<PregnancyListPage> {
 
   void addPregnancy(Pregnancy pregnancy) async {
     await PregnancyService.insertPregnancy(pregnancy);
+    await scheduleMonthlyReminders(pregnancy);
     fetchPregnancies();
   }
 
