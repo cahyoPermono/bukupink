@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 import '../services/db.dart';
 
 class ChildGrowthPage extends StatelessWidget {
@@ -32,7 +35,7 @@ class ChildGrowthPage extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.pinkAccent.withValues(alpha: 0.08),
+                    color: Colors.pinkAccent.withAlpha((0.08 * 255).toInt()),
                     blurRadius: 24,
                     offset: const Offset(0, 8),
                   ),
@@ -431,7 +434,7 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.pinkAccent.withValues(alpha: 0.08),
+                    color: Colors.pinkAccent.withAlpha((0.08 * 255).toInt()),
                     blurRadius: 16,
                     offset: const Offset(0, 8),
                   ),
@@ -556,8 +559,8 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
                             borderRadius: BorderRadius.circular(18),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.pinkAccent.withValues(
-                                  alpha: 0.07,
+                                color: Colors.pinkAccent.withAlpha(
+                                  (0.07 * 255).toInt(),
                                 ),
                                 blurRadius: 12,
                                 offset: const Offset(0, 4),
@@ -595,8 +598,8 @@ class _WeightHeightCheckPageState extends State<WeightHeightCheckPage>
                             borderRadius: BorderRadius.circular(18),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.pinkAccent.withValues(
-                                  alpha: 0.07,
+                                color: Colors.pinkAccent.withAlpha(
+                                  (0.07 * 255).toInt(),
                                 ),
                                 blurRadius: 12,
                                 offset: const Offset(0, 4),
@@ -804,33 +807,79 @@ class ImmunizationSchedulePage extends StatefulWidget {
 class _ImmunizationSchedulePageState extends State<ImmunizationSchedulePage> {
   List<_ImmunizationEntry> _immunizations = [];
   final _nameController = TextEditingController();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  bool _notifInitialized = false;
 
   @override
   void initState() {
     super.initState();
     _loadImunisasi();
+    _initNotifications();
   }
 
-  Future<void> _loadImunisasi() async {
-    final db = await DB.database;
-    final data = await db.query(
-      'imunisasi',
-      where: 'anak_id = ?',
-      whereArgs: [widget.childId],
-    );
-    setState(() {
-      _immunizations =
-          data
-              .map(
-                (e) => _ImmunizationEntry(
-                  name: e['nama'] as String,
-                  date: e['tanggal'] as String,
-                  done: (e['done'] as int) == 1,
-                  id: e['id'] as int,
-                ),
-              )
-              .toList();
-    });
+  Future<void> _initNotifications() async {
+    if (_notifInitialized) return;
+    tz.initializeTimeZones();
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    _notifInitialized = true;
+  }
+
+  Future<void> _scheduleImmunizationReminder(_ImmunizationEntry item) async {
+    if (item.date.isEmpty) return;
+    final location = tz.local;
+    final dateParts = item.date.split('-');
+    if (dateParts.length != 3) return;
+    final year = int.tryParse(dateParts[0]);
+    final month = int.tryParse(dateParts[1]);
+    final day = int.tryParse(dateParts[2]);
+    if (year == null || month == null || day == null) return;
+    // Cancel previous notifications for this immunization (4 ids)
+    for (int offset in [0, 1, 2, 3]) {
+      await flutterLocalNotificationsPlugin.cancel(
+        (item.id ?? item.hashCode) * 10 + offset,
+      );
+    }
+    // Schedule notifications for H-7, H-3, H-1, and H
+    final List<int> daysBefore = [7, 3, 1, 0];
+    final List<String> messages = [
+      'Imunisasi ${item.name} tinggal 7 hari lagi!',
+      'Imunisasi ${item.name} tinggal 3 hari lagi!',
+      'Imunisasi ${item.name} besok, jangan lupa!',
+      'Jangan lupa imunisasi: ${item.name} hari ini!',
+    ];
+    for (int i = 0; i < daysBefore.length; i++) {
+      final notifDate = tz.TZDateTime(
+        location,
+        year,
+        month,
+        day,
+        8,
+      ).subtract(Duration(days: daysBefore[i]));
+      if (notifDate.isAfter(tz.TZDateTime.now(location))) {
+        await flutterLocalNotificationsPlugin.zonedSchedule(
+          (item.id ?? item.hashCode) * 10 + i,
+          'Jadwal Imunisasi',
+          messages[i],
+          notifDate,
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'imunisasi_channel',
+              'Reminder Imunisasi',
+              channelDescription: 'Notifikasi jadwal imunisasi anak',
+              importance: Importance.max,
+              priority: Priority.high,
+            ),
+          ),
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+          matchDateTimeComponents: DateTimeComponents.dateAndTime,
+        );
+      }
+    }
   }
 
   void _addImmunization() async {
@@ -883,6 +932,34 @@ class _ImmunizationSchedulePageState extends State<ImmunizationSchedulePage> {
     setState(() {
       item.date = date;
     });
+    await _scheduleImmunizationReminder(item);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Reminder imunisasi sudah dijadwalkan!')),
+      );
+    }
+  }
+
+  Future<void> _loadImunisasi() async {
+    final db = await DB.database;
+    final data = await db.query(
+      'imunisasi',
+      where: 'anak_id = ?',
+      whereArgs: [widget.childId],
+    );
+    setState(() {
+      _immunizations =
+          data
+              .map(
+                (e) => _ImmunizationEntry(
+                  name: e['nama'] as String,
+                  date: e['tanggal'] as String,
+                  done: (e['done'] as int) == 1,
+                  id: e['id'] as int,
+                ),
+              )
+              .toList();
+    });
   }
 
   @override
@@ -914,7 +991,7 @@ class _ImmunizationSchedulePageState extends State<ImmunizationSchedulePage> {
                 borderRadius: BorderRadius.circular(18),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.pinkAccent.withValues(alpha: 0.07),
+                    color: Colors.pinkAccent.withAlpha((0.07 * 255).toInt()),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -1022,8 +1099,8 @@ class _ImmunizationSchedulePageState extends State<ImmunizationSchedulePage> {
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.pinkAccent.withValues(
-                                    alpha: 0.07,
+                                  color: Colors.pinkAccent.withAlpha(
+                                    (0.07 * 255).toInt(),
                                   ),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
@@ -1083,17 +1160,16 @@ class _ImmunizationSchedulePageState extends State<ImmunizationSchedulePage> {
                                         child: Row(
                                           children: [
                                             const Icon(
-                                              Icons.event,
-                                              size: 16,
+                                              Icons.calendar_today,
+                                              size: 18,
                                               color: Color(0xFFD291BC),
                                             ),
                                             const SizedBox(width: 4),
                                             Text(
-                                              'Tanggal: ${item.date}',
+                                              item.date,
                                               style: const TextStyle(
                                                 color: Color(0xFFD291BC),
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 13,
+                                                fontWeight: FontWeight.w500,
                                               ),
                                             ),
                                           ],
@@ -1110,23 +1186,25 @@ class _ImmunizationSchedulePageState extends State<ImmunizationSchedulePage> {
                                     ),
                                     child: IconButton(
                                       icon: const Icon(
-                                        Icons.event,
+                                        Icons.calendar_month,
                                         color: Color(0xFFD291BC),
                                       ),
                                       tooltip: 'Pilih tanggal',
                                       onPressed: () async {
                                         final picked = await showDatePicker(
                                           context: context,
-                                          initialDate: DateTime.now(),
+                                          initialDate:
+                                              item.date.isNotEmpty
+                                                  ? DateTime.parse(item.date)
+                                                  : DateTime.now(),
                                           firstDate: DateTime(2020),
-                                          lastDate: DateTime.now().add(
-                                            const Duration(days: 365),
-                                          ),
+                                          lastDate: DateTime(2100),
                                         );
                                         if (picked != null) {
-                                          final date =
-                                              '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
-                                          _setDate(i, date);
+                                          _setDate(
+                                            i,
+                                            '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}',
+                                          );
                                         }
                                       },
                                     ),
@@ -1300,11 +1378,11 @@ class ChildDevelopmentPage extends StatelessWidget {
                   final d = devs[i];
                   return Container(
                     decoration: BoxDecoration(
-                      color: d.color.withValues(alpha: 0.18),
+                      color: d.color.withAlpha((0.18 * 255).toInt()),
                       borderRadius: BorderRadius.circular(22),
                       boxShadow: [
                         BoxShadow(
-                          color: d.color.withValues(alpha: 0.10),
+                          color: d.color.withAlpha((0.10 * 255).toInt()),
                           blurRadius: 14,
                           offset: const Offset(0, 6),
                         ),
@@ -1324,7 +1402,9 @@ class ChildDevelopmentPage extends StatelessWidget {
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: d.color.withValues(alpha: 0.18),
+                                  color: d.color.withAlpha(
+                                    (0.18 * 255).toInt(),
+                                  ),
                                   blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),
