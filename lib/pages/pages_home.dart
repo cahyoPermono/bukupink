@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'pages_pregnancy_list.dart';
 import 'pages_persiapan_kelahiran.dart';
 import 'pages_pasca_melahirkan.dart';
+import 'pages_panduan_menyusui_nutrisi.dart';
+import 'pages_kesehatan_mental_ibu.dart';
+import 'pages_keluarga_berencana.dart';
 import '../services/services_user.dart';
 
 class HomePage extends StatelessWidget {
@@ -172,19 +175,36 @@ class HomePage extends StatelessWidget {
               icon: Icons.local_dining,
               title: 'Panduan Menyusui & Nutrisi',
               color: Color(0xFFFFE082),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => PanduanMenyusuiNutrisiPage(),
+                  ),
+                );
+              },
             ),
             MenuCard(
               icon: Icons.self_improvement,
               title: 'Kesehatan Mental Ibu',
               color: Color(0xFF9575CD),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => KesehatanMentalIbuPage()),
+                );
+              },
             ),
             MenuCard(
               icon: Icons.group,
               title: 'Keluarga Berencana',
               color: Color(0xFF4FC3F7),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => KeluargaBerencanaPage()),
+                );
+              },
             ),
           ],
         ),

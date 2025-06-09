@@ -12,6 +12,16 @@ import 'pages/pages_profile.dart';
 import 'pages/pages_profile_wizard.dart';
 import 'pages/pages_child_list.dart';
 import 'services/services.dart';
+import 'pages/pages_panduan_menyusui_nutrisi.dart';
+import 'pages/pages_posisi_menyusui.dart';
+import 'pages/pages_jadwal_asi_mpasi.dart';
+import 'pages/pages_tips_nutrisi.dart';
+import 'pages/pages_kesehatan_mental_ibu.dart';
+import 'pages/pages_screening_gejala.dart';
+import 'pages/pages_konseling_rujukan.dart';
+import 'pages/pages_keluarga_berencana.dart';
+import 'pages/pages_edukasi_kb.dart';
+import 'pages/pages_metode_kb.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -77,6 +87,34 @@ class MyApp extends StatelessWidget {
               name: '/profile-wizard',
               page: () => const ProfileWizardPage(),
             ),
+            GetPage(
+              name: '/panduan-menyusui-nutrisi',
+              page: () => PanduanMenyusuiNutrisiPage(),
+            ),
+            GetPage(name: '/posisi-menyusui', page: () => PosisiMenyusuiPage()),
+            GetPage(
+              name: '/jadwal-asi-mpasi',
+              page: () => JadwalAsiMpasiPage(),
+            ),
+            GetPage(name: '/tips-nutrisi', page: () => TipsNutrisiPage()),
+            GetPage(
+              name: '/kesehatan-mental-ibu',
+              page: () => KesehatanMentalIbuPage(),
+            ),
+            GetPage(
+              name: '/screening-gejala',
+              page: () => ScreeningGejalaPage(),
+            ),
+            GetPage(
+              name: '/konseling-rujukan',
+              page: () => KonselingRujukanPage(),
+            ),
+            GetPage(
+              name: '/keluarga-berencana',
+              page: () => KeluargaBerencanaPage(),
+            ),
+            GetPage(name: '/edukasi-kb', page: () => EdukasiKbPage()),
+            GetPage(name: '/metode-kb', page: () => MetodeKbPage()),
           ],
         );
       },
