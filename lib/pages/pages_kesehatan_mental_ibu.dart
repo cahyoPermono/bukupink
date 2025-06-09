@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class KesehatanMentalIbuPage extends StatelessWidget {
   const KesehatanMentalIbuPage({super.key});
@@ -27,7 +28,7 @@ class KesehatanMentalIbuPage extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.purpleAccent.withOpacity(0.08),
+                    color: Colors.purpleAccent.withValues(alpha: 0.08),
                     blurRadius: 24,
                     offset: const Offset(0, 8),
                   ),
@@ -62,32 +63,183 @@ class KesehatanMentalIbuPage extends StatelessWidget {
                   builder: (context) => const _ScreeningSheet(),
                 );
                 if (result != null && result.isRisk) {
-                  // Tampilkan dialog saran konseling
-                  showDialog(
-                    context: context,
-                    builder:
-                        (context) => AlertDialog(
-                          title: const Text('Perlu Dukungan'),
-                          content: const Text(
-                            'Hasil screening menunjukkan Bunda mungkin mengalami gejala stres atau baby blues. Jangan ragu untuk mencari dukungan dari keluarga atau tenaga profesional. 💜',
+                  // Tampilkan dialog saran konseling dengan GetX, lebih cantik
+                  Get.defaultDialog(
+                    titlePadding: const EdgeInsets.only(top: 32, bottom: 0),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 8,
+                    ),
+                    radius: 24,
+                    title: '',
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color(
+                              0xFF9575CD,
+                            ).withValues(alpha: 0.12),
+                            shape: BoxShape.circle,
                           ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('Tutup'),
+                          padding: const EdgeInsets.all(18),
+                          child: const Icon(
+                            Icons.volunteer_activism,
+                            color: Color(0xFF9575CD),
+                            size: 48,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        const Text(
+                          'Perlu Dukungan',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Color(0xFF9575CD),
+                            fontFamily: 'Nunito',
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Hasil screening menunjukkan Bunda mungkin mengalami gejala stres atau baby blues. Jangan ragu untuk mencari dukungan dari keluarga atau tenaga profesional. 💜',
+                          style: TextStyle(
+                            fontSize: 15.5,
+                            color: Color(0xFF6D4C9B),
+                            fontFamily: 'Nunito',
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: const Color(0xFF9575CD),
+                                  elevation: 0,
+                                  side: const BorderSide(
+                                    color: Color(0xFF9575CD),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  textStyle: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                onPressed: () => Get.back(),
+                                child: const Text('Tutup'),
+                              ),
                             ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                Navigator.pushNamed(
-                                  context,
-                                  '/konseling-rujukan',
-                                );
-                              },
-                              child: const Text('Lihat Konseling'),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF9575CD),
+                                  foregroundColor: Colors.white,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  textStyle: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Get.back();
+                                  Get.toNamed('/konseling-rujukan');
+                                },
+                                child: const Text('Lihat Konseling'),
+                              ),
                             ),
                           ],
                         ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                    barrierDismissible: false,
+                  );
+                } else if (result != null && !result.isRisk) {
+                  // Dialog hasil screening bagus
+                  Get.defaultDialog(
+                    titlePadding: const EdgeInsets.only(top: 32, bottom: 0),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 8,
+                    ),
+                    radius: 24,
+                    title: '',
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color(
+                              0xFF4FC3F7,
+                            ).withValues(alpha: 0.12),
+                            shape: BoxShape.circle,
+                          ),
+                          padding: const EdgeInsets.all(18),
+                          child: const Icon(
+                            Icons.emoji_emotions,
+                            color: Color(0xFF4FC3F7),
+                            size: 48,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        const Text(
+                          'Hasil Screening Bagus!',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Color(0xFF4FC3F7),
+                            fontFamily: 'Nunito',
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Selamat, Bunda! Tidak ditemukan gejala yang mengkhawatirkan. Tetap jaga kesehatan mental dan fisik, serta jangan ragu untuk mencari dukungan jika dibutuhkan. 💜',
+                          style: TextStyle(
+                            fontSize: 15.5,
+                            color: Color(0xFF1976D2),
+                            fontFamily: 'Nunito',
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 24),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF4FC3F7),
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              textStyle: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            onPressed: () => Get.back(),
+                            child: const Text('Tutup'),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                    barrierDismissible: false,
                   );
                 }
               },
@@ -144,7 +296,7 @@ class _CuteMenuCard extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.16),
+                  color: color.withValues(alpha: 0.16),
                   shape: BoxShape.circle,
                 ),
                 padding: const EdgeInsets.all(14),

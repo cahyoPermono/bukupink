@@ -57,7 +57,7 @@ class KonselingRujukanPage extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.purpleAccent.withOpacity(0.08),
+                    color: Colors.purpleAccent.withValues(alpha: 0.08),
                     blurRadius: 24,
                     offset: const Offset(0, 8),
                   ),
@@ -98,7 +98,7 @@ class KonselingRujukanPage extends StatelessWidget {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: k.color.withOpacity(0.16),
+                              color: k.color.withValues(alpha: 0.16),
                               shape: BoxShape.circle,
                             ),
                             padding: const EdgeInsets.all(14),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PanduanMenyusuiNutrisiPage extends StatelessWidget {
+  const PanduanMenyusuiNutrisiPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +27,7 @@ class PanduanMenyusuiNutrisiPage extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.pinkAccent.withOpacity(0.08),
+                    color: Colors.pinkAccent.withValues(alpha: 0.08),
                     blurRadius: 24,
                     offset: const Offset(0, 8),
                   ),
@@ -108,7 +110,7 @@ class _CuteMenuCard extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.16),
+                  color: color.withValues(alpha: 0.16),
                   shape: BoxShape.circle,
                 ),
                 padding: const EdgeInsets.all(14),

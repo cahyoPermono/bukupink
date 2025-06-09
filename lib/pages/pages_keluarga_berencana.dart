@@ -27,7 +27,7 @@ class KeluargaBerencanaPage extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blueAccent.withOpacity(0.08),
+                    color: Colors.blueAccent.withValues(alpha: 0.08),
                     blurRadius: 24,
                     offset: const Offset(0, 8),
                   ),
@@ -104,7 +104,7 @@ class _CuteMenuCard extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.16),
+                  color: color.withValues(alpha: 0.16),
                   shape: BoxShape.circle,
                 ),
                 padding: const EdgeInsets.all(14),

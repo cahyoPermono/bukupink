@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PosisiMenyusuiPage extends StatelessWidget {
+  const PosisiMenyusuiPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final List<_BreastfeedingPosition> positions = [

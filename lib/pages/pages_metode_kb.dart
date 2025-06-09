@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MetodeKbPage extends StatelessWidget {
+  const MetodeKbPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final List<_MetodeKB> metode = [
@@ -69,7 +71,7 @@ class MetodeKbPage extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blueAccent.withOpacity(0.08),
+                    color: Colors.blueAccent.withValues(alpha: 0.08),
                     blurRadius: 24,
                     offset: const Offset(0, 8),
                   ),
@@ -110,7 +112,7 @@ class MetodeKbPage extends StatelessWidget {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: m.color.withOpacity(0.16),
+                              color: m.color.withValues(alpha: 0.16),
                               shape: BoxShape.circle,
                             ),
                             padding: const EdgeInsets.all(14),

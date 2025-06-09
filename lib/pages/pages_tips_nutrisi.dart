@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class TipsNutrisiPage extends StatelessWidget {
+  const TipsNutrisiPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final List<_TipsNutrisi> tips = [
@@ -67,7 +69,7 @@ class TipsNutrisiPage extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.pinkAccent.withOpacity(0.08),
+                    color: Colors.pinkAccent.withValues(alpha: 0.08),
                     blurRadius: 24,
                     offset: const Offset(0, 8),
                   ),
@@ -108,7 +110,7 @@ class TipsNutrisiPage extends StatelessWidget {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: t.color.withOpacity(0.16),
+                              color: t.color.withValues(alpha: 0.16),
                               shape: BoxShape.circle,
                             ),
                             padding: const EdgeInsets.all(14),

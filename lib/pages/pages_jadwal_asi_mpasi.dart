@@ -69,7 +69,7 @@ class JadwalAsiMpasiPage extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.pinkAccent.withOpacity(0.08),
+                    color: Colors.pinkAccent.withValues(alpha: 0.08),
                     blurRadius: 24,
                     offset: const Offset(0, 8),
                   ),
@@ -110,7 +110,7 @@ class JadwalAsiMpasiPage extends StatelessWidget {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: j.color.withOpacity(0.16),
+                              color: j.color.withValues(alpha: 0.16),
                               shape: BoxShape.circle,
                             ),
                             padding: const EdgeInsets.all(14),
